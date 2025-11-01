@@ -7,11 +7,6 @@ export default function ReviewSection() {
     const [reviewData, setReviewData] = useState([]);
     const [openIndex, setOpenIndex] = useState(null);
     const toggleFAQ = (index) => setOpenIndex(openIndex === index ? null : index);
-
-    useEffect(() => {
-        window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
-    }, []);
     useEffect(() => {
         const load = async () => {
             try {
