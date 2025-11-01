@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const http = axios.create({
-    baseURL: "http://localhost:5000",
-    withCredentials: true, // needed to receive session cookie
+    baseURL: import.meta.env.VITE_API_URL,
+    withCredentials: true,
 });
 
 export default http;
