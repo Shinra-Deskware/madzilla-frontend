@@ -18,6 +18,7 @@ import {
 } from "../../Constants/constants";
 
 import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
+import http from "../../api/http";
 
 const steps = [
     ORDER_STATUS.PENDING,
@@ -56,7 +57,7 @@ export default function MobileOrdersPage({ page }) {
         complaintOpen, setComplaintOpen, complaintOrder, setComplaintOrder,
         complaintText, setComplaintText, complaintTitle, setComplaintTitle,
         priority, setPriority, photo, setPhoto, photoPreview, setPhotoPreview,
-        fetchOrders, complaintType, setComplaintType
+        fetchOrders, complaintType, setComplaintType, downloadInvoice, invoiceLoading
     } = page;
 
     const [mobileOrder, setMobileOrder] = useState(null);
@@ -68,7 +69,6 @@ export default function MobileOrdersPage({ page }) {
             return ORDER_STATUS.RETURNED;
         return o.status;
     };
-
     return (
         <>
             <div className="mobile-orders-wrapper">
@@ -119,8 +119,18 @@ export default function MobileOrdersPage({ page }) {
                                 <div className="summary-actions">
                                     {mobileOrder.paymentStatus === "PAID" &&
                                         <Tooltip title="Invoice">
-                                            <div className="action-item">
-                                                <PictureAsPdfIcon /><span>Invoice</span>
+                                            <div
+                                                className="action-item"
+                                                onClick={() => !invoiceLoading && downloadInvoice(mobileOrder)}
+                                                style={{ opacity: invoiceLoading ? 0.4 : 1 }}
+                                            >
+                                                {invoiceLoading ? (
+                                                    <div className="spinner-small"></div>
+                                                ) : (
+                                                    <>
+                                                        <PictureAsPdfIcon /><span>Invoice</span>
+                                                    </>
+                                                )}
                                             </div>
                                         </Tooltip>
                                     }
@@ -139,7 +149,7 @@ export default function MobileOrdersPage({ page }) {
 
                                     {mobileOrder.paymentStatus === "PENDING" &&
                                         <Tooltip title="Pay">
-                                            <div className="action-item" onClick={() => startPayment(mobileOrder)}>
+                                            <div className="action-item" onClick={() => { startPayment(mobileOrder); setMobileSummaryOpen(false) }}>
                                                 <CurrencyRupeeIcon /><span>Pay</span>
                                             </div>
                                         </Tooltip>

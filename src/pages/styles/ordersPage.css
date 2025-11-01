@@ -459,4 +459,19 @@
         font-weight: 700;
     }
 
+    .spinner-small {
+        width: 18px;
+        height: 18px;
+        border: 2px solid #00b86e;
+        border-top: 2px solid transparent;
+        border-radius: 50%;
+        animation: spin .7s linear infinite;
+    }
+
+    @keyframes spin {
+        100% {
+            transform: rotate(360deg)
+        }
+    }
+
 }

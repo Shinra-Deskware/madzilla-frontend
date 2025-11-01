@@ -89,8 +89,10 @@ export default function OrdersPage() {
     const [complaintTitle, setComplaintTitle] = useState("");
     const [priority, setPriority] = useState("Medium");
     const [complaintType, setComplaintType] = useState("COMPLAINT");
-
+    const [successPopup, setSuccessPopup] = useState(false);
+    const [createdComplaintId, setCreatedComplaintId] = useState("");
     const [cancelOtpOpen, setCancelOtpOpen] = useState(false);
+    const [invoiceLoading, setInvoiceLoading] = useState(false);
 
     // ✅ Fetch orders
     const fetchOrders = async () => {
@@ -162,42 +164,46 @@ export default function OrdersPage() {
 
     // ✅ Invoice
     const downloadInvoice = async (order) => {
-        const response = await http.post(`/api/invoice/generate`,
-            {
-                number: order.orderId,
-                companyName: "S H I N R A",
-                companyDescription: "LUXURY DESKWARE",
-                companyEmail: "customercare@shinra.com",
-                companyPhone: "+91 6303666387",
-                companyAddress: "Plot 226, HMT Colony, Miyapur, HYD.",
-                customerName: order.address.fullName,
-                customerEmail: order.address.emailId || "N/A",
-                customerPhone: order.address.phoneNumber,
-                customerAddress: order.address.addr1,
-                items: order.items.map(i => ({
-                    name: i.title, qty: i.count, price: Number(i.price),
-                    total: Number(i.count) * Number(i.price)
-                })),
-                subtotal: order.items.reduce((a, b) => a + (b.count * b.price), 0),
-                total: order.items.reduce((a, b) => a + (b.count * b.price), 0),
-                orderInfo: {
-                    orderStatus: order.status,
-                    orderId: order.orderId,
-                    trackingId: order.trackingId,
-                    paymentMethod: order.paymentMethod,
-                    paymentStatus: order.paymentStatus,
-                    createdAt: order.createdAt
+        try {
+            setInvoiceLoading(true);
+            const response = await http.post(`/api/invoice/generate`,
+                {
+                    number: order.orderId,
+                    companyName: "S H I N R A",
+                    companyDescription: "LUXURY DESKWARE",
+                    companyEmail: "support@shinra-deskware.com",
+                    companyPhone: "+91 6303666387",
+                    companyAddress: "Plot 226, HMT Colony, Miyapur, HYD.",
+                    customerName: order.address.fullName,
+                    customerEmail: order.address.emailId || "N/A",
+                    customerPhone: order.address.phoneNumber,
+                    customerAddress: order.address.addr1,
+                    items: order.items.map(i => ({
+                        name: i.title, qty: i.count, price: Number(i.price),
+                        total: Number(i.count) * Number(i.price)
+                    })),
+                    subtotal: order.items.reduce((a, b) => a + (b.count * b.price), 0),
+                    total: order.items.reduce((a, b) => a + (b.count * b.price), 0),
+                    orderInfo: {
+                        orderStatus: order.status,
+                        orderId: order.orderId,
+                        trackingId: order.trackingId,
+                        paymentMethod: order.paymentMethod,
+                        paymentStatus: order.paymentStatus,
+                        createdAt: order.createdAt
+                    },
+                    terms: ["This invoice is valid.", "Thank you for shopping."]
                 },
-                terms: ["This invoice is valid.", "Thank you for shopping."]
-            },
-            { responseType: "blob" }
-        );
-
-        const blob = new Blob([response.data], { type: "application/pdf" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url; a.download = `invoice-${order.orderId}.pdf`; a.click();
-        URL.revokeObjectURL(url);
+                { responseType: "blob" }
+            );
+            const blob = new Blob([response.data], { type: "application/pdf" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url; a.download = `invoice-${order.orderId}.pdf`; a.click();
+            URL.revokeObjectURL(url);
+        } finally {
+            setInvoiceLoading(false);
+        }
     };
 
     // ✅ If refund done after return → show RETURNED
@@ -227,7 +233,7 @@ export default function OrdersPage() {
             complaintOpen, setComplaintOpen, complaintOrder, setComplaintOrder,
             complaintText, setComplaintText, complaintTitle, setComplaintTitle,
             priority, setPriority, selectedOrder, expanded, setExpanded,
-            requestReturn, complaintType, setComplaintType, fetchOrders
+            requestReturn, complaintType, setComplaintType, fetchOrders, downloadInvoice, invoiceLoading
         }} />;
 
     // ✅ Desktop
@@ -341,8 +347,18 @@ export default function OrdersPage() {
 
                                 {selectedOrder.paymentStatus === PAYMENT_STATUS.PAID && (
                                     <Tooltip title="Invoice">
-                                        <div className="action-item" onClick={() => downloadInvoice(selectedOrder)}>
-                                            <PictureAsPdfIcon /><span>Invoice</span>
+                                        <div
+                                            className="action-item"
+                                            onClick={() => !invoiceLoading && downloadInvoice(selectedOrder)}
+                                            style={{ opacity: invoiceLoading ? 0.5 : 1, pointerEvents: invoiceLoading ? "none" : "auto" }}
+                                        >
+                                            {invoiceLoading ? (
+                                                <CircularProgress size={20} sx={{ color: "#00b86e" }} />
+                                            ) : (
+                                                <>
+                                                    <PictureAsPdfIcon /><span>Invoice</span>
+                                                </>
+                                            )}
                                         </div>
                                     </Tooltip>
                                 )}
@@ -443,7 +459,7 @@ export default function OrdersPage() {
                         disabled={!complaintText.trim() || !complaintTitle.trim()}
                         onClick={async () => {
                             try {
-                                await http.post("/api/complaints", {
+                                const { data } = await http.post("/api/complaints", {
                                     orderId: complaintOrder.orderId,
                                     userPhone: user.phoneNumber,
                                     type: complaintType,
@@ -453,15 +469,49 @@ export default function OrdersPage() {
                                 setComplaintText("");
                                 setComplaintTitle("");
                                 setComplaintOpen(false);
-                                setComplaintType("COMPLAINT"); // 🔥 reset
+                                setComplaintType("COMPLAINT");
+                                setCreatedComplaintId(data.complaint._id);
+                                setSuccessPopup(true);
                                 await fetchOrders();
                             } catch {
                                 alert("Failed, try again.");
                             }
-                        }}>Submit</Button>
+                        }}
+                    >Submit</Button>
                 </DialogActions>
             </Dialog>
-
+            <Dialog
+                open={successPopup}
+                onClose={() => setSuccessPopup(false)}
+                maxWidth="xs"
+                fullWidth
+                PaperProps={{
+                    style: {
+                        backgroundColor: "#1e1e1e",
+                        color: "white",
+                        borderRadius: 14,
+                        padding: "20px"
+                    }
+                }}
+            >
+                <DialogTitle sx={{ textAlign: "center", fontWeight: 600 }}>
+                    ✅ Request Submitted
+                </DialogTitle>
+                <DialogContent sx={{ textAlign: "center", fontSize: 14 }}>
+                    Your {complaintType === "RETURN" ? "return request" : "complaint"} has been created.<br />
+                    <b>ID: {createdComplaintId}</b><br /><br />
+                    We will get back to you within 24 hours.
+                </DialogContent>
+                <DialogActions sx={{ justifyContent: "center" }}>
+                    <Button
+                        variant="contained"
+                        sx={{ background: "#00b86e" }}
+                        onClick={() => setSuccessPopup(false)}
+                    >
+                        OK
+                    </Button>
+                </DialogActions>
+            </Dialog>
             {/* ✅ Cancel OTP */}
             <CancelOrderOtp open={cancelOtpOpen} onClose={() => setCancelOtpOpen(false)}
                 userPhone={user.phoneNumber} onVerified={cancelOrder} />

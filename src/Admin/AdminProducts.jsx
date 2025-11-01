@@ -5,6 +5,7 @@ import {
 } from "@mui/material";
 import http from "../api/http";
 import "./Styles/AdminProducts.css";
+import { Select, MenuItem } from "@mui/material";
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
@@ -21,8 +22,8 @@ export default function AdminProducts() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const res = await http.get("/api/admin/products");
-                setProducts(res.data.products || []);
+                const res = await http.get("/api/sections/products");
+                setProducts(res.data || []);
             } catch (err) {
                 console.error("Fetch products failed:", err);
             } finally {
@@ -64,17 +65,18 @@ export default function AdminProducts() {
     const filteredProducts = useMemo(() => {
         return products.filter((p) => {
             return (
-                p.key?.toLowerCase().includes(filters.key.toLowerCase()) &&
-                p.title?.toLowerCase().includes(filters.title.toLowerCase()) &&
-                String(p.stock || "").toLowerCase().includes(filters.stock.toLowerCase()) &&
-                String(p.price || "").toLowerCase().includes(filters.price.toLowerCase()) &&
-                String(p.originalPrice || "").toLowerCase().includes(filters.originalPrice.toLowerCase()) &&
-                String(p.discount || "").toLowerCase().includes(filters.discount.toLowerCase()) &&
-                String(p.rating || "").toLowerCase().includes(filters.rating.toLowerCase()) &&
-                String(p.totalReviews || "").toLowerCase().includes(filters.totalReviews.toLowerCase())
+                (!filters.key || String(p.key).toLowerCase().includes(filters.key.toLowerCase())) &&
+                (!filters.title || String(p.title).toLowerCase().includes(filters.title.toLowerCase())) &&
+                (!filters.stock || String(p.stock).toLowerCase().includes(filters.stock.toLowerCase())) &&
+                (!filters.price || String(p.price).toLowerCase().includes(filters.price.toLowerCase())) &&
+                (!filters.originalPrice || String(p.originalPrice).toLowerCase().includes(filters.originalPrice.toLowerCase())) &&
+                (!filters.discount || String(p.discount).toLowerCase().includes(filters.discount.toLowerCase())) &&
+                (!filters.rating || String(p.rating).toLowerCase().includes(filters.rating.toLowerCase())) &&
+                (!filters.totalReviews || String(p.totalReviews).toLowerCase().includes(filters.totalReviews.toLowerCase()))
             );
         });
     }, [products, filters]);
+
 
     const paginatedProducts = useMemo(() => {
         const start = page * rowsPerPage;
@@ -152,13 +154,16 @@ export default function AdminProducts() {
                                     </TableCell>
                                     <TableCell>
                                         {editRow === p._id ? (
-                                            <TextField
+                                            <Select
                                                 size="small"
-                                                value={editData.stock || ""}
+                                                value={editData.stock}
                                                 onChange={(e) => handleChangeEdit("stock", e.target.value)}
-                                            />
+                                            >
+                                                <MenuItem value={true}>In Stock</MenuItem>
+                                                <MenuItem value={false}>Out of Stock</MenuItem>
+                                            </Select>
                                         ) : (
-                                            String(p.stock)
+                                            p.stock ? "In Stock" : "Out of Stock"
                                         )}
                                     </TableCell>
                                     <TableCell>
