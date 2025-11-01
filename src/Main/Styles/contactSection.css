@@ -1,0 +1,150 @@
+/* 🌑 Footer Wrapper */
+.footer-section {
+    width: 100%;
+    background: #000;
+    color: #ccc;
+    padding: 3rem 4vw 2rem;
+    border-top: 1px solid #111;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Layout Wrapper */
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 4rem;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-bottom: 2rem;
+}
+
+/* Column */
+.footer-column {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Brand Column */
+.footer-brand {
+    max-width: 330px;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-logo-img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.footer-logo-text {
+    font-weight: 800;
+    color: #fff;
+    letter-spacing: 1px;
+}
+
+.footer-about {
+    color: #aaa;
+    line-height: 1.5;
+    font-size: 0.9rem;
+    margin-bottom: 12px;
+}
+
+/* Titles & Links */
+.footer-title {
+    color: #fff !important;
+    font-weight: 700 !important;
+    margin-bottom: 0.7rem !important;
+    font-size: 1rem !important;
+    text-align: center;
+}
+
+.footer-link {
+    color: #aaa;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: 0.25s;
+    width: fit-content;
+}
+
+.footer-link:hover {
+    color: #4262ff;
+}
+
+/* Contact & Social text rows */
+.footer-contact {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 6px;
+    font-size: 0.92rem;
+}
+
+.footer-icon {
+    font-size: 1.2rem;
+    color: #4262ff;
+}
+
+.footer-contact-link {
+    color: #aaa;
+    text-decoration: none;
+    transition: 0.25s;
+}
+
+.footer-contact-link:hover {
+    color: #4262ff;
+}
+
+/* Store + Social side-by-side */
+.footer-middle-row {
+    display: flex;
+    flex: 1;
+    gap: 3rem;
+    justify-content: space-around;
+}
+
+/* Bottom copyright */
+.footer-copy {
+    border-top: 1px solid #111;
+    padding-top: 1.2rem;
+    text-align: center;
+    font-size: 0.85rem;
+    color: #666;
+}
+
+/* 📱 Mobile Styling */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        gap: 2.5rem;
+    }
+
+    .footer-brand {
+        max-width: 100%;
+        text-align: center;
+        align-items: center;
+    }
+
+    .footer-middle-row {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .footer-middle-row .footer-column {
+        text-align: left;
+        align-items: flex-start;
+    }
+
+    .footer-contact-col {
+        width: 100%;
+        text-align: left;
+    }
+}

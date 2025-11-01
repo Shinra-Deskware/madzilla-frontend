@@ -1,0 +1,47 @@
+.admin-dashboard {
+    background: #121212;
+    padding: 20px;
+    color: #fff;
+    height: 80vh;
+    width: 90%;
+    border-radius: 10px;
+    margin-top: 4%;
+}
+
+.admin-tabs {
+    background: #000;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.1);
+    padding: 10px;
+}
+
+.tab-container {
+    display: flex;
+    justify-content: center;
+}
+
+.tab-item {
+    color: #ccc !important;
+    font-weight: 600 !important;
+    transition: color 0.2s ease;
+}
+
+.tab-item:hover {
+    color: #fff !important;
+}
+
+.tab-indicator {
+    background-color: #fff !important;
+    height: 3px;
+}
+
+.admin-content {
+    margin-top: 25px;
+}
+
+@media (max-width: 768px) {
+    .tab-container {
+        flex-direction: column;
+        align-items: center;
+    }
+}

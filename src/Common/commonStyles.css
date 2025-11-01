@@ -1,0 +1,198 @@
+/* ✨ Initial state — apply fade-in animation automatically */
+.intro-screen {
+    opacity: 0;
+    animation: introFadeIn 2s ease-in forwards;
+}
+
+/* 🌙 When fading out */
+.intro-screen.fade-out {
+    animation: introFadeOut 1.5s ease-in-out forwards;
+}
+
+/* 🌀 Keyframes */
+@keyframes introFadeIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes introFadeOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+}
+
+
+/* ✅ Hero section below navbar and full height */
+.content-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: black;
+}
+
+.first-section {
+    margin-top: 64px !important;
+    height: calc(100vh - 64px);
+}
+
+.navbar {
+    min-height: 64px !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* ✅ center vertically, cleaner */
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Dashboard layout */
+.dashboard-root {
+    display: flex;
+    height: calc(100vh - 60px);
+    margin-top: 60px;
+    background: #000;
+    color: #fff;
+}
+
+/* Sidebar: collapsed by default and expands on hover */
+.sidebar {
+    position: fixed;
+    left: 0;
+    top: 60px;
+    bottom: 0;
+    width: 72px;
+    background: #000000;
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: width 220ms ease;
+    overflow: hidden;
+    z-index: 999;
+}
+
+/* expand on hover */
+.sidebar:hover {
+    width: 200px;
+}
+
+/* Sidebar content wrappers */
+.sidebar-top {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 8px;
+}
+
+.sidebar-bottom {
+    padding: 16px 8px;
+}
+
+/* Links / buttons */
+.sidebar-link,
+.sidebar-logout {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border-radius: 8px;
+    color: #cfcfcf;
+    text-decoration: none;
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    transition: background 180ms ease, color 180ms ease;
+    border: none;
+    width: 100%;
+}
+
+/* default hover and active */
+.sidebar-link.active,
+.sidebar-link:hover,
+.sidebar-logout:hover {
+    background: #fff;
+    /* ✅ white background */
+    color: #000;
+    /* ✅ black text */
+}
+
+/* icon default */
+.sidebar .icon {
+    min-width: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    transition: color 0.2s ease;
+}
+
+/* when active or hover → black icon */
+.sidebar-link.active .icon,
+.sidebar-link:hover .icon,
+.sidebar-logout:hover .icon {
+    color: #000;
+    /* ✅ black icon */
+}
+
+/* label visibility toggles with sidebar width */
+.sidebar .label {
+    white-space: nowrap;
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: opacity 160ms ease, transform 160ms ease;
+}
+
+/* when sidebar is hovered, show labels */
+.sidebar:hover .label {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Main content area on right of sidebar */
+.dashboard-main {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    overflow: scroll;
+    height: 100% !important;
+    scrollbar-width: none;
+    margin-top: 2rem;
+    background-color: black;
+}
+
+/* inner content container */
+.dashboard-content {
+    margin: 0 auto;
+}
+
+/* small responsive adjustments */
+@media (max-width: 900px) {
+    .sidebar {
+        top: 56px;
+        width: 60px;
+    }
+
+    .dashboard-root {
+        margin-top: 56px;
+        height: calc(100vh - 56px);
+    }
+
+    .sidebar:hover {
+        width: 180px;
+    }
+
+}

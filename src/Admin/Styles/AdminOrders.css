@@ -1,0 +1,31 @@
+.admin-orders {
+    color: #fff;
+}
+
+.admin-orders h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.admin-orders-table {
+    background: #1e1e1e !important;
+    border-radius: 10px;
+}
+
+.admin-orders-table th,
+.admin-orders-table td {
+    color: #eaeaea !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.admin-orders-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.admin-orders-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+}

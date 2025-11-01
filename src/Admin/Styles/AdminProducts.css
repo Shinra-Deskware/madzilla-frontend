@@ -1,0 +1,44 @@
+.admin-section {
+    color: #fff;
+}
+
+.admin-card {
+    background: #1e1e1e;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(255, 255, 255, 0.05);
+    margin-top: 10px;
+    color: #eaeaea;
+}
+
+.admin-products {
+    color: #fff;
+}
+
+.admin-products h2 {
+    margin-bottom: 20px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.admin-products-table {
+    background: #1e1e1e !important;
+    border-radius: 10px;
+}
+
+.admin-products-table th,
+.admin-products-table td {
+    color: #eaeaea !important;
+    border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+.admin-products-table tr:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+}
+
+.admin-products-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 60vh;
+}

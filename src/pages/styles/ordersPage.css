@@ -1,0 +1,462 @@
+.overflow-orders {
+    width: 100% !important;
+}
+
+.order-card {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    background: #141414;
+    padding: 15px;
+    color: #fff;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, .15);
+    transition: .2s;
+    border-radius: 14px;
+    align-items: center;
+}
+
+.cancelled-box {
+    text-align: center;
+    padding: 15px;
+    font-size: 16px;
+    font-weight: 600;
+    color: #ff4d4f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.order-left {
+    width: 30%
+}
+
+.order-images {
+    display: flex;
+    gap: 10px
+}
+
+.order-images img {
+    width: 60px;
+    height: 60px;
+    border-radius: 4px;
+    object-fit: cover;
+    border: 1px solid #ccc
+}
+
+.order-info {
+    flex: 2;
+    display: flex;
+    justify-content: space-around;
+    font-size: 14px
+}
+
+.order-info p {
+    margin: 0
+}
+
+.status {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-weight: 600
+}
+
+.status.delivered {
+    color: green
+}
+
+.status.out {
+    color: orange
+}
+
+.status.processing {
+    color: #555
+}
+
+.icon {
+    font-size: 18px
+}
+
+.order-accordion {
+    background: #141414 !important;
+    color: #fff !important;
+    margin-bottom: 20px;
+    border-radius: 14px !important;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, .15)
+}
+
+.order-accordion .MuiAccordionSummary-content {
+    margin: 0 !important
+}
+
+.stepper-container {
+    padding: 20px;
+    background: #1d1d1d;
+    border-radius: 12px
+}
+
+.MuiStepLabel-label {
+    color: #bbb !important
+}
+
+.step-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: 13px;
+    color: #bbb
+}
+
+.step-date {
+    font-size: 11px;
+    margin-top: 2px;
+    color: #888
+}
+
+.checkout-container {
+    display: flex;
+    margin-top: 4%;
+    gap: 20px;
+    width: 95%;
+    height: 100%;
+    padding: 0 10px;
+}
+
+.orders-accordion-section {
+    width: 90%;
+    display: flex;
+    flex-direction: column;
+}
+
+.orders-accordion-section h2 {
+    color: #fff;
+    margin: 0px !important;
+    margin-bottom: 1% !important;
+}
+
+.summary-section h2 {
+    color: #fff;
+    margin: 0px !important;
+    margin-bottom: 1% !important;
+}
+
+.orders-list {
+    height: 80vh;
+    overflow: scroll
+}
+
+.orders-list::-webkit-scrollbar {
+    height: 2px;
+    width: 5px
+}
+
+.orders-list::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 999px
+}
+
+.summary-section {
+    width: 30%;
+    position: sticky;
+    height: fit-content
+}
+
+.summary-card {
+    background: #141414;
+    color: #fff;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 2px 15px rgba(0, 0, 0, .15)
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin: 6px 0;
+    font-size: 14px
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-weight: 700;
+    margin-top: 10px;
+    font-size: 15px
+}
+
+.summary-actions {
+    display: flex;
+    justify-content: space-around;
+    padding-bottom: 12px;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #2a2a2a
+}
+
+.action-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    color: #bbb;
+    font-size: 13px;
+    transition: .2s
+}
+
+.action-item.disabled {
+    color: #555;
+    cursor: not-allowed
+}
+
+.payment-status-badge {
+    margin-top: 4px;
+    font-size: .75rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 8px;
+    display: inline-block
+}
+
+.payment-status-badge.pending {
+    background: #444;
+    color: #ffb400
+}
+
+.payment-status-badge.paid {
+    background: #00b86e;
+    color: #fff
+}
+
+.payment-status-badge.failed {
+    background: #a40000;
+    color: #fff
+}
+
+.payment-status-badge.cancelled {
+    background: #d32f2f;
+    color: #fff
+}
+
+.payment-status-badge.refund_initiated {
+    background: #fbc02d;
+    color: #000
+}
+
+/* ✅ MOBILE NEW DESIGN */
+@media (max-width:768px) {
+    .summary-card {
+        padding: 0px;
+    }
+
+    .summary-row {
+        padding: 0px 10px;
+    }
+
+    .mobile-orders-wrapper {
+        padding: 14px;
+        width: 100%;
+    }
+
+    .mobile-each-step {
+        min-width: 130px;
+    }
+
+    .mobile-order-card {
+        background: #151515;
+        padding: 14px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        color: #eee;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        box-shadow: 0 0 14px rgba(0, 0, 0, 0.35);
+        transition: all .15s;
+        position: relative;
+    }
+
+    .mobile-order-card:active {
+        transform: scale(.97);
+        background: #191919;
+    }
+
+    .mobile-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 6px;
+    }
+
+    .mobile-order-id {
+        font-weight: 700;
+        font-size: 14px;
+        color: #fff;
+    }
+
+    .mobile-summary-btn {
+        background: rgba(0, 184, 110, 0.15);
+        border: 1px solid #00b86e;
+        color: #00b86e;
+        padding: 6px 10px;
+        font-size: 11px;
+        border-radius: 6px;
+        font-weight: 600;
+    }
+
+    .mobile-meta {
+        font-size: 12px;
+        opacity: .8;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .mobile-thumb-row {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 8px;
+    }
+
+    .mobile-thumb-row img {
+        width: 52px;
+        height: 52px;
+        border-radius: 6px;
+        object-fit: cover;
+        border: 1px solid #222;
+    }
+
+    .mobile-status-row {
+        display: flex;
+        align-items: center;
+        font-size: 13px;
+        color: #aaa;
+    }
+
+    /* ✅ Solid status dot (NO animation) */
+    .mobile-status-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        margin-right: 6px;
+    }
+
+    /* ✅ Left vertical status bar */
+    .mobile-order-card::before {
+        content: "";
+        position: absolute;
+        left: -6px;
+        top: 10px;
+        bottom: 10px;
+        width: 3px;
+        border-radius: 4px;
+    }
+
+    .drawer-content {
+        padding: 14px;
+        background: #141414;
+        min-height: 60vh;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        color: #fff;
+    }
+
+    .mobile-stepper-wrap {
+        overflow-x: auto;
+        margin-top: 12px;
+        padding-bottom: 10px;
+    }
+
+    /* ✅ Price pill */
+    .price-tag {
+        padding: 3px 8px;
+        font-size: 12px;
+        border-radius: 6px;
+        font-weight: 700;
+        color: #00e676;
+    }
+
+    /* ✅ Status dot colors only */
+    .mobile-status-dot.orderplaced {
+        background: #ffda47;
+    }
+
+    .mobile-status-dot.orderpacked {
+        background: #ff9800;
+    }
+
+    .mobile-status-dot.intransit {
+        background: #2979ff;
+    }
+
+    .mobile-status-dot.outfordelivery {
+        background: #ab47bc;
+    }
+
+    .mobile-status-dot.delivered {
+        background: #00c853;
+    }
+
+    .mobile-status-dot.pending {
+        background: #999;
+    }
+
+    .mobile-status-dot.cancelled,
+    .mobile-status-dot.refundinitiated {
+        background: #ab2f2f;
+    }
+
+    /* ✅ Left status strip only */
+    .mobile-order-card.orderplaced::before {
+        background: #ffcc00;
+    }
+
+    .mobile-order-card.orderpacked::before {
+        background: #ff9800;
+    }
+
+    .mobile-order-card.intransit::before {
+        background: #2979ff;
+    }
+
+    .mobile-order-card.outfordelivery::before {
+        background: #ab47bc;
+    }
+
+    .mobile-order-card.delivered::before {
+        background: #00c853;
+    }
+
+    .mobile-order-card.pending::before {
+        background: #999;
+    }
+
+    .mobile-order-card.cancelled::before,
+    .mobile-order-card.refundinitiated::before {
+        background: #ab2f2f;
+    }
+
+    .MuiDrawer-paper {
+        background-color: #000 !important;
+    }
+
+    .address-block span:last-child {
+        text-align: right;
+    }
+
+    .mobile-bottom-sheet {
+        background: #141414 !important;
+        border-top-left-radius: 16px;
+        border-top-right-radius: 16px;
+        padding: 16px;
+    }
+
+    .sheet-container {
+        padding: 12px;
+        color: #fff;
+    }
+
+    .sheet-container h4 {
+        margin: 0 0 8px;
+        font-weight: 700;
+    }
+
+}

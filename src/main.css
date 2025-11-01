@@ -1,0 +1,135 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300&display=swap');
+
+.shinra-intro-container {
+    width: 100vw;
+    height: 100vh;
+    background: radial-gradient(circle at center, #0A0A0D 0%, #000 70%);
+    overflow: hidden;
+}
+
+#logo-container {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    will-change: transform;
+    animation: logoShift 4s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+}
+
+/* === TEXT WRAPPER === */
+.brand-text {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(calc(-50% + 240px), -50%);
+    opacity: 0;
+    animation: textReveal 2.2s ease-out forwards 0s;
+    font-family: "Poppins", sans-serif;
+    text-align: left;
+}
+
+/* === MAIN TITLE === */
+.brand-title {
+    background: linear-gradient(to bottom, #E8E8EA, #BFC0C3 60%, #7B7C80);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-size: 70px;
+    letter-spacing: 14px;
+    font-weight: 300;
+    -webkit-text-stroke: 1px rgba(200, 200, 215, 0.25);
+}
+
+/* === SUBTITLE === */
+.brand-sub {
+    color: #9aa0aa;
+    font-size: 18px;
+    letter-spacing: 10px;
+    margin-top: 8px;
+    font-weight: 300;
+}
+
+/* Line draw animation */
+@keyframes draw {
+    to {
+        stroke-dashoffset: 0;
+    }
+}
+
+/* Desktop logo slide */
+@keyframes logoShift {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+
+    100% {
+        transform: translate(calc(-50% - 240px), -50%);
+    }
+}
+
+/* Desktop text reveal */
+@keyframes textReveal {
+    0% {
+        opacity: 0;
+        letter-spacing: 2px;
+        transform: translate(calc(-50% + 180px), -50%);
+    }
+
+    100% {
+        opacity: 1;
+        letter-spacing: 14px;
+        transform: translate(calc(-50% + 180px), -50%);
+    }
+}
+
+/* ✅ Mobile stack mode */
+@media (max-width: 768px) {
+
+    #logo-container {
+        animation: none !important;
+        transform: translate(-50%, -55%) !important;
+    }
+
+    #brand-text {
+        position: absolute;
+        left: 50% !important;
+        top: calc(50% + 140px) !important;
+        transform: translate(-50%, 0) !important;
+        text-align: center !important;
+        width: 100% !important;
+        opacity: 0;
+        animation: textRevealMobile 1.8s ease-out forwards 0.8s !important;
+
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    @keyframes textRevealMobile {
+        0% {
+            opacity: 0;
+            letter-spacing: 2px;
+            transform: translate(-50%, 10px);
+        }
+
+        100% {
+            opacity: 1;
+            letter-spacing: 8px;
+            transform: translate(-50%, 0);
+        }
+    }
+
+    #brand-text div:first-child {
+        font-size: 40px !important;
+        letter-spacing: 4px !important;
+        line-height: 1.1;
+        white-space: nowrap;
+    }
+
+    #brand-text div:last-child {
+        font-size: 12px !important;
+        letter-spacing: 4px !important;
+        line-height: 1.1;
+        white-space: nowrap;
+    }
+}
