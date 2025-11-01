@@ -9,7 +9,6 @@ export default function ReviewSection() {
     const toggleFAQ = (index) => setOpenIndex(openIndex === index ? null : index);
 
     useEffect(() => {
-        const handleResize = () => setIsMobile(window.innerWidth <= 768);
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);

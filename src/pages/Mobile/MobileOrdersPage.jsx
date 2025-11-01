@@ -139,6 +139,7 @@ export default function MobileOrdersPage({ page }) {
                                         <div className="action-item"
                                             onClick={() => {
                                                 setComplaintType("COMPLAINT");
+                                                setMobileSummaryOpen(false);
                                                 setComplaintOrder(mobileOrder);
                                                 setComplaintOpen(true);
                                                 setComplaintTitle("");
@@ -160,7 +161,7 @@ export default function MobileOrdersPage({ page }) {
                                         mobileOrder.status !== ORDER_STATUS.CANCELLED &&
                                         mobileOrder.paymentStatus !== PAYMENT_STATUS.REFUND_DONE && (
                                             <Tooltip title="Cancel Order">
-                                                <div className="action-item" onClick={() => setCancelOtpOpen(true)}>
+                                                <div className="action-item" onClick={() => { setCancelOtpOpen(true); setMobileSummaryOpen(false) }}>
                                                     <CancelIcon /><span>Cancel</span>
                                                 </div>
                                             </Tooltip>
@@ -181,6 +182,7 @@ export default function MobileOrdersPage({ page }) {
                                                     setComplaintOrder(mobileOrder);
                                                     setComplaintTitle("Return Request");
                                                     setComplaintOpen(true);
+                                                    setMobileSummaryOpen(false);
                                                 }}>
                                                     <Rotate90DegreesCcwIcon /><span>Return</span>
                                                 </div>
@@ -274,13 +276,14 @@ export default function MobileOrdersPage({ page }) {
                         </>
                     )}
                 </div>
-            </SwipeableDrawer>
+            </SwipeableDrawer >
 
             {/* ✅ Complaint/Return Drawer */}
-            <SwipeableDrawer
+            < SwipeableDrawer
                 anchor="bottom"
                 open={complaintOpen}
-                onClose={() => setComplaintOpen(false)}
+                onClose={() => setComplaintOpen(false)
+                }
                 PaperProps={{ className: "mobile-bottom-sheet" }}
             >
                 <div className="sheet-container">
@@ -341,7 +344,7 @@ export default function MobileOrdersPage({ page }) {
                         Submit
                     </Button>
                 </div>
-            </SwipeableDrawer>
+            </SwipeableDrawer >
 
             <CancelOrderOtp
                 open={cancelOtpOpen}
