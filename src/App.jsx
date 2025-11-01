@@ -6,9 +6,9 @@ import ProductsPage from "./pages/ProductsPage";
 import CartPage from "./pages/CartPage";
 import OrdersPage from "./pages/OrdersPage";
 import DetailsPage from "./pages/DetailsPage";
-import ContactPage from "./pages/ContactPage";
 import "./Common/commonStyles.css";
 import ProtectedAdmin from "./Admin/routes/ProtectedAdmin";
+import ReturnPolicy from "./pages/ReturnPolicy";
 
 function DashboardLayout({ isMobile }) {
     return (
@@ -38,7 +38,7 @@ export default function App() {
                 <Route path="/dashboard/cart" element={<CartPage />} />
                 <Route path="/dashboard/orders" element={<OrdersPage />} />
                 <Route path="/dashboard/details" element={<DetailsPage />} />
-                <Route path="/dashboard/contactus" element={<ContactPage />} />
+                <Route path="/dashboard/returnpolicy" element={<ReturnPolicy />} />
                 <Route path="/dashboard/admin/*" element={<ProtectedAdmin />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />

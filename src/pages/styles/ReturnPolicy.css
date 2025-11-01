@@ -1,0 +1,62 @@
+.rp-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 60px 5vw;
+    gap: 40px;
+    min-height: 70vh;
+}
+
+.rp-left {
+    flex: 1;
+    max-width: 480px;
+}
+
+.rp-left h2 {
+    font-size: 36px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.rp-left p {
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+.rp-btn {
+    background: #000;
+    color: #fff;
+    border: none;
+    padding: 12px 28px;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.rp-right {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+}
+
+.rp-right img {
+    width: 100%;
+    max-width: 400px;
+}
+
+/* ✅ Responsive */
+@media (max-width: 768px) {
+    .rp-container {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .rp-left {
+        max-width: 100%;
+    }
+
+    .rp-right img {
+        max-width: 300px;
+    }
+}
