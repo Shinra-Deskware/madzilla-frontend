@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import {
-    SwipeableDrawer, Stepper, Step, StepLabel, TextField, Tooltip, Button
+    SwipeableDrawer, Stepper, Step, StepLabel, TextField, Tooltip, Button, Dialog, CircularProgress
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
@@ -16,7 +16,6 @@ import {
     ORDER_STATUS_LABELS,
     PAYMENT_STATUS_LABELS
 } from "../../Constants/constants";
-
 import StepConnector, { stepConnectorClasses } from "@mui/material/StepConnector";
 import http from "../../api/http";
 
@@ -56,19 +55,21 @@ export default function MobileOrdersPage({ page }) {
         orders, startPayment, cancelOrder, cancelOtpOpen, setCancelOtpOpen,
         complaintOpen, setComplaintOpen, complaintOrder, setComplaintOrder,
         complaintText, setComplaintText, complaintTitle, setComplaintTitle,
-        priority, setPriority, photo, setPhoto, photoPreview, setPhotoPreview,
         fetchOrders, complaintType, setComplaintType, downloadInvoice, invoiceLoading
     } = page;
 
     const [mobileOrder, setMobileOrder] = useState(null);
     const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
+    const [complaintLoading, setComplaintLoading] = useState(false);
+    const [successPopup, setSuccessPopup] = useState(false);
+    const [createdComplaintId, setCreatedComplaintId] = useState("");
 
-    // ✅ helper for final status check
     const effectiveStatus = (o) => {
         if (o.status === ORDER_STATUS.RETURN_RECEIVED && o.paymentStatus === PAYMENT_STATUS.REFUND_DONE)
             return ORDER_STATUS.RETURNED;
         return o.status;
     };
+
     return (
         <>
             <div className="mobile-orders-wrapper">
@@ -117,6 +118,8 @@ export default function MobileOrdersPage({ page }) {
                         <>
                             <div className="summary-card">
                                 <div className="summary-actions">
+
+                                    {/* ✅ Invoice */}
                                     {mobileOrder.paymentStatus === "PAID" &&
                                         <Tooltip title="Invoice">
                                             <div
@@ -135,6 +138,7 @@ export default function MobileOrdersPage({ page }) {
                                         </Tooltip>
                                     }
 
+                                    {/* ✅ Complaint */}
                                     <Tooltip title="Complaint">
                                         <div className="action-item"
                                             onClick={() => {
@@ -148,6 +152,7 @@ export default function MobileOrdersPage({ page }) {
                                         </div>
                                     </Tooltip>
 
+                                    {/* ✅ Pay */}
                                     {mobileOrder.paymentStatus === "PENDING" &&
                                         <Tooltip title="Pay">
                                             <div className="action-item" onClick={() => { startPayment(mobileOrder); setMobileSummaryOpen(false) }}>
@@ -156,7 +161,7 @@ export default function MobileOrdersPage({ page }) {
                                         </Tooltip>
                                     }
 
-                                    {/* ✅ Cancel Only if eligible */}
+                                    {/* ✅ Cancel */}
                                     {mobileOrder.currentStep <= 2 &&
                                         mobileOrder.status !== ORDER_STATUS.CANCELLED &&
                                         mobileOrder.paymentStatus !== PAYMENT_STATUS.REFUND_DONE && (
@@ -167,7 +172,7 @@ export default function MobileOrdersPage({ page }) {
                                             </Tooltip>
                                         )}
 
-                                    {/* ✅ Return Button */}
+                                    {/* ✅ Return */}
                                     {mobileOrder.status === ORDER_STATUS.DELIVERED &&
                                         mobileOrder.paymentStatus === PAYMENT_STATUS.PAID &&
                                         ![
@@ -205,7 +210,6 @@ export default function MobileOrdersPage({ page }) {
                                 <hr />
                                 <div className="summary-row"><span>Items ({mobileOrder.items.length})</span><span>₹{mobileOrder.total}</span></div>
                             </div>
-
                             {/* ✅ Return & Refund Flow */}
                             <div className="mobile-stepper-wrap">
                                 {(() => {
@@ -227,6 +231,7 @@ export default function MobileOrdersPage({ page }) {
                                         return <div className="cancelled-box">Refund Completed — Returned ✅</div>;
 
                                     if (mobileOrder.status === ORDER_STATUS.CANCELLED) {
+
                                         if (mobileOrder.paymentStatus === PAYMENT_STATUS.REFUND_REQUESTED)
                                             return <div className="cancelled-box">Refund Requested — Awaiting Approval</div>;
 
@@ -273,17 +278,17 @@ export default function MobileOrdersPage({ page }) {
                                     );
                                 })()}
                             </div>
+
                         </>
                     )}
                 </div>
-            </SwipeableDrawer >
+            </SwipeableDrawer>
 
             {/* ✅ Complaint/Return Drawer */}
-            < SwipeableDrawer
+            <SwipeableDrawer
                 anchor="bottom"
                 open={complaintOpen}
-                onClose={() => setComplaintOpen(false)
-                }
+                onClose={() => setComplaintOpen(false)}
                 PaperProps={{ className: "mobile-bottom-sheet" }}
             >
                 <div className="sheet-container">
@@ -321,30 +326,56 @@ export default function MobileOrdersPage({ page }) {
                     <Button
                         fullWidth variant="contained"
                         sx={{ background: "#00b86e", borderRadius: 8, py: 1.2, fontWeight: 600 }}
-                        disabled={!complaintText.trim() || !complaintTitle.trim()}
+                        disabled={!complaintText.trim() || !complaintTitle.trim() || complaintLoading}
                         onClick={async () => {
                             try {
-                                await http.post("/api/complaints", {
+                                setComplaintLoading(true);
+                                const { data } = await http.post("/api/complaints", {
                                     orderId: complaintOrder.orderId,
                                     userPhone: page?.user?.phoneNumber,
                                     type: complaintType,
                                     title: complaintTitle.trim(),
                                     message: complaintText.trim()
                                 });
+                                setCreatedComplaintId(data.complaint._id);
+                                setSuccessPopup(true);
                                 setComplaintText("");
                                 setComplaintTitle("");
                                 setComplaintOpen(false);
-                                setComplaintType(null);
+                                if (complaintType === "RETURN") setComplaintType("COMPLAINT");
                                 if (fetchOrders) await fetchOrders();
-                            } catch (e) {
+                            } catch {
                                 alert("Failed. Try again.");
+                            } finally {
+                                setComplaintLoading(false);
                             }
                         }}
                     >
-                        Submit
+                        {complaintLoading ? <CircularProgress size={22} sx={{ color: "white" }} /> : "Submit"}
                     </Button>
                 </div>
-            </SwipeableDrawer >
+            </SwipeableDrawer>
+
+            {/* ✅ Success Popup */}
+            <Dialog
+                open={successPopup}
+                onClose={() => setSuccessPopup(false)}
+                maxWidth="xs"
+                fullWidth
+                PaperProps={{ style: { backgroundColor: "#1e1e1e", color: "white", borderRadius: 14, padding: "20px" } }}
+            >
+                <h3 style={{ textAlign: "center", fontWeight: 600, margin: 0 }}>✅ Request Submitted</h3>
+                <div style={{ textAlign: "center", fontSize: 14, padding: "10px 0" }}>
+                    Your {complaintType === "RETURN" ? "return request" : "complaint"} has been created.<br />
+                    <b>ID: {createdComplaintId}</b><br /><br />
+                    We will get back to you within 24 hours.
+                </div>
+                <div style={{ display: "flex", justifyContent: "center", paddingBottom: 10 }}>
+                    <Button variant="contained" sx={{ background: "#00b86e" }} onClick={() => setSuccessPopup(false)}>
+                        OK
+                    </Button>
+                </div>
+            </Dialog>
 
             <CancelOrderOtp
                 open={cancelOtpOpen}
