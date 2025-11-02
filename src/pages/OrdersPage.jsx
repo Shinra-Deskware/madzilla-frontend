@@ -96,9 +96,9 @@ export default function OrdersPage() {
 
     // ✅ Fetch orders
     const fetchOrders = async () => {
-        if (!user?.phoneNumber) return setLoading(false);
+        if (!user?.emailId) return setLoading(false);
         try {
-            const res = await http.get(`/api/users/${user.phoneNumber}/orders`);
+            const res = await http.get(`/api/users/email/${user.emailId}/orders`);
             const list = res.data.orders || [];
             setOrders(list);
             if (list.length) setExpanded(list[0].orderId);
@@ -122,12 +122,13 @@ export default function OrdersPage() {
             key: o.key,
             amount: o.amount,
             currency: o.currency,
-            order_id: o.order_id,
+            order_id: o.razorpay_order_id || o.order_id,
             name: "Shinra Deskware",
-            handler: (res) => { verifyPayment(res); localStorage.removeItem("cart"); }
+            handler: (res) => verifyPayment(res, o) // ✅ pass order object
         });
         r.open();
     };
+
 
     const startPayment = async (o) => {
         if (o.razorpay_order_id && o.paymentStatus === "PENDING")
@@ -135,11 +136,12 @@ export default function OrdersPage() {
                 key: import.meta.env.VITE_RAZORPAY_KEY_ID,
                 order_id: o.razorpay_order_id,
                 amount: (o.total + o.shipping) * 100,
-                currency: "INR"
+                currency: "INR",
+                orderId: o.orderId // ✅ ADD THIS
             });
 
         const { data } = await http.post("/api/payment/order", {
-            phoneNumber: user.phoneNumber,
+            emailId: user.emailId,
             items: o.items,
             total: o.total,
             shipping: o.shipping,
@@ -149,16 +151,26 @@ export default function OrdersPage() {
         openRazorpay(data);
     };
 
-    const verifyPayment = async (res) => {
-        await http.post("/api/payment/verify", { ...res, phoneNumber: user.phoneNumber });
-        await fetchOrders();
+    const verifyPayment = async (res, o) => {
+        try {
+            await http.post("/api/payment/verify", {
+                ...res,                  // razorpay ids + signature
+                orderId: o.orderId,      // ✅ send correct orderId
+                emailId: user.emailId,   // ✅ user email
+            });
+            await fetchOrders();       // refresh UI
+            localStorage.removeItem("cart");
+        } catch (err) {
+            console.error(err);
+            alert("Payment verification failed. Please contact support.");
+        }
     };
 
     // ✅ Cancel
     const selectedOrder = orders.find(o => o.orderId === expanded);
     const cancelOrder = async () => {
         if (!selectedOrder || selectedOrder.currentStep >= 3) return;
-        await http.post(`/api/users/${user.phoneNumber}/orders/${selectedOrder.orderId}/cancel`);
+        await http.post(`/api/users/email/${user.emailId}/orders/${selectedOrder.orderId}/cancel`);
         await fetchOrders();
     };
 
@@ -178,12 +190,13 @@ export default function OrdersPage() {
                     customerEmail: order.address.emailId || "N/A",
                     customerPhone: order.address.phoneNumber,
                     customerAddress: order.address.addr1,
-                    items: order.items.map(i => ({
-                        name: i.title, qty: i.count, price: Number(i.price),
-                        total: Number(i.count) * Number(i.price)
-                    })),
-                    subtotal: order.items.reduce((a, b) => a + (b.count * b.price), 0),
-                    total: order.items.reduce((a, b) => a + (b.count * b.price), 0),
+                    items: order.items.map(i => {
+                        const q = Number(i.count ?? i.qty ?? 1);
+                        const p = Number(i.price);
+                        return { name: i.title, qty: q, price: p, total: q * p };
+                    }),
+                    subtotal: order.items.reduce((a, b) => a + (Number(b.count ?? b.qty ?? 1) * Number(b.price)), 0),
+                    total: order.items.reduce((a, b) => a + (Number(b.count ?? b.qty ?? 1) * Number(b.price)), 0),
                     orderInfo: {
                         orderStatus: order.status,
                         orderId: order.orderId,
@@ -402,6 +415,7 @@ export default function OrdersPage() {
                                         ORDER_STATUS.RETURN_REQUESTED,
                                         ORDER_STATUS.RETURN_ACCEPTED,
                                         ORDER_STATUS.RETURN_RECEIVED,
+                                        ORDER_STATUS.RETURN_REJECTED,
                                         ORDER_STATUS.RETURNED
                                     ].includes(selectedOrder.status) && (
                                         <Tooltip title="Return Order">
@@ -461,7 +475,7 @@ export default function OrdersPage() {
                             try {
                                 const { data } = await http.post("/api/complaints", {
                                     orderId: complaintOrder.orderId,
-                                    userPhone: user.phoneNumber,
+                                    emailId: user.emailId,
                                     type: complaintType,
                                     title: complaintTitle.trim(),
                                     message: complaintText.trim()
@@ -514,7 +528,7 @@ export default function OrdersPage() {
             </Dialog>
             {/* ✅ Cancel OTP */}
             <CancelOrderOtp open={cancelOtpOpen} onClose={() => setCancelOtpOpen(false)}
-                userPhone={user.phoneNumber} onVerified={cancelOrder} />
+                userEmail={user.emailId} onVerified={cancelOrder} />
         </>
     );
 }

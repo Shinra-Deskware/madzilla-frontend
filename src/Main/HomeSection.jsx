@@ -65,7 +65,7 @@ export default function HomeSection() {
                     </div>
 
                     <div className="available-on">
-                        <h3 className="available-title">AVAILABLE ON</h3>
+                        <h3 className="available-title">SOON ON...</h3>
                         <div className="store-links">
                             <a
                                 href="https://www.amazon.in"
@@ -116,7 +116,7 @@ export default function HomeSection() {
                     </div>
 
                     <div className="available-on">
-                        <h3 className="available-title">AVAILABLE ON</h3>
+                        <h3 className="available-title">SOON ON...</h3>
                         <div className="store-links">
                             <a href="https://www.amazon.in" loading="lazy" target="_blank" rel="noopener noreferrer">
                                 <img src="/assets/amazon.png" alt="Amazon" />

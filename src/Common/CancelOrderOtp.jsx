@@ -99,7 +99,7 @@ function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
     );
 }
 
-export default function CancelOrderOtp({ open, onClose, userPhone, onVerified }) {
+export default function CancelOrderOtp({ open, onClose, userEmail, onVerified }) {
     const isMobile = useMediaQuery("(max-width:768px)");
     const [step, setStep] = useState(1);
     const [otp, setOtp] = useState("");
@@ -107,23 +107,34 @@ export default function CancelOrderOtp({ open, onClose, userPhone, onVerified })
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
     const [resendIn, setResendIn] = useState(0);
-    const [phoneInput, setPhoneInput] = useState("");
+    const [emailInput, setEmailInput] = useState("");
 
     useEffect(() => {
         if (!open) {
-            setPhoneInput("");
+            // reset when popup closes
+            setEmailInput("");
             setStep(1);
             setOtp("");
+            setRequestId(null);
+            setErrorMsg("");
+            setResendIn(0);
+        } else {
+            // auto-fill when popup opens
+            if (userEmail) {
+                setEmailInput(userEmail);
+            }
         }
-    }, [])
+    }, [open, userEmail]);
+
+
     const OTP_LEN = 6;
     const RESEND_SECONDS = 30;
 
-    const handleSendOtp = async (phone) => {
+    const handleSendOtp = async (email) => {
         setLoading(true); setErrorMsg("");
-        if (userPhone === phone) {
+        if (userEmail === email) {
             try {
-                const { data } = await sendOtp({ identifier: phone });
+                const { data } = await sendOtp({ identifier: email, channel: "email" });
                 setRequestId(data.requestId);
                 setStep(2);
                 setResendIn(RESEND_SECONDS);
@@ -141,7 +152,7 @@ export default function CancelOrderOtp({ open, onClose, userPhone, onVerified })
             }
         } else {
             setLoading(false);
-            setErrorMsg("Please enter registered number");
+            setErrorMsg("Please enter registered email");
         }
     };
 
@@ -164,8 +175,8 @@ export default function CancelOrderOtp({ open, onClose, userPhone, onVerified })
     };
 
     const handleResendOtp = async () => {
-        if (resendIn > 0 || !userPhone) return;
-        await handleSendOtp(userPhone);
+        if (resendIn > 0 || !userEmail) return;
+        await handleSendOtp(userEmail);
     };
 
     const renderStep = () => {
@@ -179,14 +190,14 @@ export default function CancelOrderOtp({ open, onClose, userPhone, onVerified })
                                 Cancel Order Confirmation
                             </Typography>
                             <Typography variant="body2" color="grey.400" sx={{ mb: 2 }}>
-                                Enter your phone number to receive the OTP
+                                Enter your email to receive OTP
                             </Typography>
 
                             <TextField
                                 fullWidth
-                                placeholder="Enter phone number"
-                                value={phoneInput}
-                                onChange={(e) => setPhoneInput(e.target.value.replace(/\D/g, ""))}
+                                placeholder="Enter email"
+                                value={emailInput}
+                                onChange={(e) => setEmailInput(e.target.value.trim())}
                                 sx={{
                                     input: { color: "#fff" },
                                     "& .MuiOutlinedInput-root fieldset": { borderColor: "#666" },
@@ -198,12 +209,11 @@ export default function CancelOrderOtp({ open, onClose, userPhone, onVerified })
                                 fullWidth
                                 variant="contained"
                                 sx={{ mt: 2, ...gradientBg }}
-                                onClick={() => handleSendOtp(phoneInput)}
-                                disabled={phoneInput.length < 10 || loading}
+                                onClick={() => handleSendOtp(emailInput)}
+                                disabled={!emailInput.includes("@") || loading}
                             >
                                 {loading ? "Sending OTP..." : "Send OTP"}
                             </Button>
-
                             {errorMsg && (
                                 <Typography color="error" variant="caption" sx={{ mt: 1 }}>
                                     {errorMsg}
@@ -221,7 +231,7 @@ export default function CancelOrderOtp({ open, onClose, userPhone, onVerified })
                                 Enter OTP to Cancel Order
                             </Typography>
                             <Typography variant="body2" color="grey.400">
-                                Sent to WhatsApp {userPhone}
+                                OTP sent to {userEmail}
                             </Typography>
                             <OtpBoxes
                                 value={otp}

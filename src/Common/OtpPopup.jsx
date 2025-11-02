@@ -71,7 +71,6 @@ const MotionBox = motion(Box);
 
 function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
     const inputsRef = useRef([]);
-
     const handleChange = (index, v) => {
         const clean = v.replace(/\D/g, "").slice(0, 1);
         const next = value.split("");
@@ -131,6 +130,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
     const [mobile, setMobile] = useState("");
     const [mobileOtp, setMobileOtp] = useState("");
     const { fetchUser } = useUser();
+    const EMAIL_OTP_MODE = true;
 
     const [showInputError, setShowInputError] = useState(false);
     const [requestId, setRequestId] = useState(null);
@@ -217,23 +217,23 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                     <MotionBox>
                         <StepContainer>
                             <HeaderIcon>
-                                <LockRoundedIcon fontSize="large" />
+                                {EMAIL_OTP_MODE ? <MarkEmailUnreadRoundedIcon fontSize="large" /> : <LockRoundedIcon fontSize="large" />}
                             </HeaderIcon>
                             <Typography variant="h6" fontWeight={600} sx={{ my: 2 }}>
                                 OTP Verification
                             </Typography>
                             <Typography variant="body2" color="grey.400">
-                                We’ll send you a one-time password on WhatsApp
+                                We’ll send you a one-time OTP on {EMAIL_OTP_MODE ? "Email" : "WhatsApp"}
                             </Typography>
                             <TextField
                                 fullWidth
-                                placeholder="Enter Mobile Number (+91...)"
+                                placeholder={EMAIL_OTP_MODE ? "Enter Email" : "Enter Mobile Number (+91...)"}
                                 value={mobile}
-                                type="tel"
+                                type={EMAIL_OTP_MODE ? "email" : "tel"}
                                 onChange={(e) => setMobile(e.target.value)}
                                 error={showInputError && !mobile.trim()}
                                 helperText={
-                                    showInputError && !mobile.trim() ? "Enter your mobile" : ""
+                                    showInputError && !mobile.trim() ? EMAIL_OTP_MODE ? "Enter your email" : "Enter your mobile": ""
                                 }
                                 sx={{
                                     mt: 2,
@@ -255,7 +255,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                                 onClick={handleGetOtp}
                                 disabled={loading}
                             >
-                                {loading ? "Sending..." : "Get OTP on WhatsApp"}
+                                {loading ? "Sending..." : (EMAIL_OTP_MODE ? "Get OTP on Email" : "Get OTP on WhatsApp")}
                             </Button>
                         </StepContainer>
                     </MotionBox>
@@ -272,7 +272,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                                 Enter OTP
                             </Typography>
                             <Typography variant="body2" color="grey.400">
-                                Sent to WhatsApp {mobile}
+                                Sent to {EMAIL_OTP_MODE ? "Email" : "WhatsApp"} {mobile}
                             </Typography>
                             <OtpBoxes
                                 value={mobileOtp}

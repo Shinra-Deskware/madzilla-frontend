@@ -29,7 +29,7 @@ export const PAYMENT_STATUS = {
 };
 
 export const ORDER_STATUS_LABELS = {
-    PENDING: "Payment Pending",
+    PENDING: "Status",
     ORDER_PLACED: "Order Placed",
     ORDER_PACKED: "Packed",
     IN_TRANSIT: "In Transit",

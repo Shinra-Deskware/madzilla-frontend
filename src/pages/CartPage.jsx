@@ -17,9 +17,9 @@ import SaveIcon from "@mui/icons-material/Save";
 //imports
 import "./styles/cartPage.css";
 import OtpPopup from "../Common/OtpPopup";
-import OrderConfirmOtp from "../Common/OrderConfirmOtp";
 import http from "../api/http";
 import { useUser } from "../context/UserContext";
+import { State, City } from "country-state-city";
 
 const PaymentLogos = { Phonepe: 'phonepe', Paytm: 'paytm', Gpay: 'gpay' };
 const DeliveryLogos = { Fast: 'rabbit', Normal: 'tortoise' };
@@ -31,6 +31,55 @@ const Info = [
 ];
 
 const formatNumber = n => Number(n).toLocaleString('en-IN');
+
+// ---------- Validation helpers (pure) ----------
+const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const NAME_RX = /^[a-zA-Z][a-zA-Z\s'.-]{2,49}$/;               // min 3
+const CITY_RX = /^[A-Za-z][A-Za-z\s.-]{2,}$/;                   // min 3
+const PIN_RX = /^[1-9][0-9]{5}$/;                               // 6 digits India
+const PHONE_RX = /^[6-9]\d{9}$/;                                // 10-digit India
+
+const addressRequiredKeys = ["fullName", "emailId", "phoneNumber", "state", "city", "pincode", "addr1"];
+
+function validateValue(name, value) {
+    const val = String(value ?? "").trim();
+    switch (name) {
+        case "fullName":
+            if (!val) return "Full Name is required";
+            if (!NAME_RX.test(val)) return "Enter a valid name (min 3 chars)";
+            return "";
+        case "emailId":
+            if (!val) return "Email missing in profile";
+            if (!EMAIL_RX.test(val)) return "Invalid email in profile";
+            return "";
+        case "phoneNumber":
+            if (!PHONE_RX.test(val)) return "Enter valid 10-digit Indian mobile, You'll receive order updates";
+            return "";
+        case "state":
+            if (!val) return "State is required";
+            return "";
+        case "city":
+            if (!CITY_RX.test(val)) return "Enter valid city";
+            return "";
+        case "pincode":
+            if (!PIN_RX.test(val)) return "Enter valid 6-digit pincode";
+            return "";
+        case "addr1":
+            if (val.length < 10) return "Address must be at least 10 characters";
+            return "";
+        default:
+            return "";
+    }
+}
+
+function allAddressValid(address, currentErrors = {}) {
+    // Pure check for guarding UI; does not mutate state
+    const fieldErrors = addressRequiredKeys.map(k => validateValue(k, address[k]));
+    const anyNewErrors = fieldErrors.some(msg => !!msg);
+    const anyExisting = Object.values(currentErrors).some(Boolean);
+    return { ok: !anyNewErrors && !anyExisting, fieldErrorsByKey: Object.fromEntries(addressRequiredKeys.map((k, i) => [k, fieldErrors[i]])) };
+}
+// ------------------------------------------------
 
 const CartItem = ({ item, onQtyChange, onRemove }) => {
     const key = item.key ?? item.id;
@@ -76,6 +125,8 @@ export default function CartPage() {
         pincode: "",
         addr1: ""
     });
+    const [states, setStates] = useState([]);
+    const [cities, setCities] = useState([]);
     const [errors, setErrors] = useState({});
     const [deliveryMethod, setDeliveryMethod] = useState("");
     const [paymentMethod, setPaymentMethod] = useState("");
@@ -103,6 +154,7 @@ export default function CartPage() {
     const subtotal = total + shipping + discount;
 
     useEffect(() => {
+        setStates(State.getStatesOfCountry("IN"));
         if (user) {
             setAddress(prev => ({
                 ...prev,
@@ -114,6 +166,11 @@ export default function CartPage() {
                 pincode: user.address?.pinCode || "",
                 addr1: user.address?.addr1 || ""
             }));
+            // ✅ auto-load cities when editing saved address
+            if (user.address?.state) {
+                const st = State.getStatesOfCountry("IN").find(s => s.name === user.address.state);
+                if (st) setCities(City.getCitiesOfState("IN", st.isoCode));
+            }
         }
     }, [user]);
 
@@ -128,13 +185,10 @@ export default function CartPage() {
     const persist = (next) => {
         setProducts(next);
         localStorage.setItem("cart", JSON.stringify(next));
-
-        // 🧠 Notify sidebar instantly
         const totalItems = next.reduce((sum, item) => sum + (item.count || item.qty || 1), 0);
         const ev = new CustomEvent("cart-updated", { detail: { count: totalItems } });
         window.dispatchEvent(ev);
     };
-
 
     const handleQtyChange = (key, delta) => {
         const updated = products
@@ -153,33 +207,37 @@ export default function CartPage() {
         } else setOpenOtp(true);
     };
 
+    // stateful validation on change/blur
     const validateField = (name, value) => {
-        let error = "";
-        if (name === "fullName" && !value) error = "Full Name is required";
-        if (name === "emailId" && !/^\S+@\S+\.\S+$/.test(value)) error = "Enter a valid email";
-        if (name === "phoneNumber" && !/^[6-9]\d{9}$/.test(value)) error = "Enter valid 10-digit phone number";
-        if (name === "state" && !value) error = "State is required";
-        if (name === "city" && !/^[a-zA-Z\s]{3,}$/.test(value)) error = "Enter valid city";
-        if (name === "pincode" && !/^[1-9][0-9]{5}$/.test(value)) error = "Enter valid 6-digit pincode";
-        if (name === "addr1" && value.length < 10) error = "Address must be at least 10 characters";
-        setErrors(prev => ({ ...prev, [name]: error }));
-        return error === "";
+        const msg = validateValue(name, value);
+        setErrors(prev => (prev[name] === msg ? prev : { ...prev, [name]: msg }));
+        return msg === "";
     };
 
     const isAddressValid = () => {
-        let valid = true;
-        for (const key of Object.keys(fieldRefs)) {
-            const fieldValid = validateField(key, address[key]);
-            if (!fieldValid && valid) {
-                fieldRefs[key].current?.scrollIntoView({ behavior: "smooth", block: "center" });
-                fieldRefs[key].current?.focus();
-                valid = false;
-            }
+        let firstInvalidKey = null;
+        const nextErrors = {};
+        for (const key of addressRequiredKeys) {
+            const msg = validateValue(key, address[key]);
+            nextErrors[key] = msg;
+            if (!firstInvalidKey && msg) firstInvalidKey = key;
         }
-        return valid;
+        setErrors(nextErrors);
+        if (firstInvalidKey) {
+            fieldRefs[firstInvalidKey].current?.scrollIntoView({ behavior: "smooth", block: "center" });
+            fieldRefs[firstInvalidKey].current?.focus();
+            return false;
+        }
+        return true;
     };
 
     const handleChange = (name, value) => {
+        // state -> load cities
+        if (name === "state") {
+            const st = states.find(s => s.name === value);
+            setCities(st ? City.getCitiesOfState("IN", st.isoCode) : []);
+            setAddress(prev => ({ ...prev, city: "" }));
+        }
         setAddress(prev => ({ ...prev, [name]: value }));
         validateField(name, value);
     };
@@ -195,13 +253,13 @@ export default function CartPage() {
         try {
             setIsPlacingOrder(true);
             const { data } = await http.post("/api/payment/order", {
-                phoneNumber: user.phoneNumber,
+                emailId: user?.emailId || address.emailId,
                 items: products,
                 total,
                 shipping,
                 address,
             });
-            openRazorpay(data);
+            openRazorpay(data, data.orderId);
         } catch (err) {
             console.error("Order create error:", err);
             alert("Failed to create order");
@@ -215,18 +273,17 @@ export default function CartPage() {
             key: razorData.key,
             amount: razorData.amount,
             currency: razorData.currency,
-            order_id: razorData.order_id,
+            order_id: razorData.razorpay_order_id,
             name: "Shinra Deskware",
             description: "Payment for SHINRA",
             handler: async (response) => {
                 try {
-                    // 🟢 Verify payment and update the existing order
                     await http.post("/api/payment/verify", {
                         ...response,
                         orderId,
-                        phoneNumber: user.phoneNumber,
+                        emailId: user?.emailId || address.emailId,
                     });
-                    await http.post(`/api/orders/${orderId}/confirm`);
+                    await http.post(`/api/payment/${orderId}/confirm`);
                     localStorage.removeItem("cart");
                     setProducts([]);
                     const ev = new CustomEvent("cart-updated", { detail: { count: 0 } });
@@ -239,7 +296,7 @@ export default function CartPage() {
                     const ev = new CustomEvent("cart-updated", { detail: { count: 0 } });
                     window.dispatchEvent(ev);
                     setOrderConfirmed(true);
-                    setTimeout(() => navigate("/dashboard/orders"), 2500); // redirect later
+                    setTimeout(() => navigate("/dashboard/orders"), 2500);
                 }
             },
             modal: {
@@ -249,7 +306,7 @@ export default function CartPage() {
                     const ev = new CustomEvent("cart-updated", { detail: { count: 0 } });
                     window.dispatchEvent(ev);
                     setOrderConfirmed(true);
-                    setTimeout(() => navigate("/dashboard/orders"), 2500); // redirect later
+                    setTimeout(() => navigate("/dashboard/orders"), 2500);
                 },
             },
             theme: { color: "#7A5CF4" },
@@ -258,11 +315,19 @@ export default function CartPage() {
         rzp.open();
     };
 
+    // Pure overall validity (for UI guard & border)
+    const { ok: addressAllOk } = allAddressValid(address, errors);
+    const hasAddressErrors = !addressAllOk;
+
     const canPlaceOrder = () => {
         return (
-            !paymentMethod || !deliveryMethod || isPlacingOrder || !address.addr1 || !address.city || !address.pincode || !address.phoneNumber || !address.state || !(/^\S+@\S+\.\S+$/.test(address.emailId))
-        )
-    }
+            !paymentMethod ||
+            !deliveryMethod ||
+            hasAddressErrors ||
+            isPlacingOrder
+        );
+    };
+
     return (
         <div className="dashboard-cart-content">
             {orderConfirmed ? (
@@ -276,8 +341,6 @@ export default function CartPage() {
             ) : (
                 <div className="dashboard-cart-content">
                     <OtpPopup open={openOtp} onClose={() => setOpenOtp(false)} onVerified={() => setShowCheckout(true)} />
-                    <OrderConfirmOtp open={openConfirmOtp} onClose={() => setOpenConfirmOtp(false)} userPhone={user?.phoneNumber} onVerified={startPayment} />
-
                     {!showCheckout && (
                         <div className="cart-container">
                             <div className="cart-products">
@@ -328,7 +391,7 @@ export default function CartPage() {
                     {showCheckout && (
                         <div className="checkout-two-col">
                             <div className="checkout-left">
-                                {/* Accordion Steps */}
+                                {/* Accordion: Items */}
                                 <Accordion expanded={expanded === "items"} onChange={(_, e) => setExpanded(e ? "items" : false)}>
                                     <AccordionSummary expandIcon={expanded === "items" ? <SaveIcon /> : <EditIcon />} onClick={() => setExpanded(expanded === "items" ? false : "items")}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -359,20 +422,26 @@ export default function CartPage() {
                                     </AccordionDetails>
                                 </Accordion>
 
-                                {/* ADDRESS */}
-                                <Accordion expanded={expanded === "address"}>
+                                {/* Accordion: Address */}
+                                <Accordion
+                                    expanded={expanded === "address"}
+                                    sx={{
+                                        border: hasAddressErrors ? "1px solid #ef5350" : "1px solid transparent",
+                                        borderRadius: 2
+                                    }}
+                                >
                                     <AccordionSummary
                                         expandIcon={
                                             expanded === "address"
-                                                ? <SaveIcon sx={{ color: Object.values(errors).some(e => e) ? "inherit" : "green" }} />
+                                                ? <SaveIcon sx={{ color: hasAddressErrors ? "inherit" : "green" }} />
                                                 : <EditIcon />
                                         }
                                         onClick={() => {
                                             if (expanded === "address") {
                                                 const valid = isAddressValid();
-                                                if (valid) setExpanded("payment"); // ✅ only close if valid
+                                                if (valid) setExpanded("payment");
                                             } else {
-                                                setExpanded("address"); // open manually
+                                                setExpanded("address");
                                             }
                                         }}
                                     >
@@ -400,7 +469,7 @@ export default function CartPage() {
                                                         pincode: "Pincode",
                                                         addr1: "Address Line 1"
                                                     }[field];
-                                                    const isSelect = field === "state";
+                                                    const isSelect = field === "state" || field === "city";
                                                     return (
                                                         <TextField
                                                             key={field}
@@ -409,13 +478,13 @@ export default function CartPage() {
                                                             label={label}
                                                             inputRef={fieldRefs[field]}
                                                             value={address[field]}
-                                                            disabled={field === "phoneNumber"}
+                                                            disabled={field === "emailId"} // lock email
                                                             onChange={(e) => handleChange(field, e.target.value)}
                                                             select={isSelect}
                                                             SelectProps={isSelect ? { native: true } : undefined}
                                                             InputLabelProps={isSelect ? { shrink: true } : undefined}
                                                             error={!!errors[field]}
-                                                            helperText={errors[field]}
+                                                            helperText={errors[field] || " "}
                                                             InputProps={{
                                                                 endAdornment: (
                                                                     <InputAdornment position="end">
@@ -424,11 +493,19 @@ export default function CartPage() {
                                                                 ),
                                                             }}
                                                         >
-                                                            {isSelect && (
+                                                            {isSelect && field === "state" && (
                                                                 <>
                                                                     <option value="">Select State</option>
-                                                                    {["Andhra Pradesh", "Arunachal Pradesh", "Assam", "Bihar", "Chhattisgarh", "Goa", "Gujarat", "Haryana", "Himachal Pradesh", "Jharkhand", "Karnataka", "Kerala", "Madhya Pradesh", "Maharashtra", "Manipur", "Meghalaya", "Mizoram", "Nagaland", "Odisha", "Punjab", "Rajasthan", "Sikkim", "Tamil Nadu", "Telangana", "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Andaman and Nicobar Islands", "Chandigarh", "Dadra and Nagar Haveli and Daman and Diu", "Delhi", "Jammu and Kashmir", "Ladakh", "Lakshadweep", "Puducherry"].map(s => (
-                                                                        <option key={s} value={s}>{s}</option>
+                                                                    {states.map(s => (
+                                                                        <option key={s.isoCode} value={s.name}>{s.name}</option>
+                                                                    ))}
+                                                                </>
+                                                            )}
+                                                            {isSelect && field === "city" && (
+                                                                <>
+                                                                    <option value="">Select City</option>
+                                                                    {cities.map(c => (
+                                                                        <option key={c.name} value={c.name}>{c.name}</option>
                                                                     ))}
                                                                 </>
                                                             )}
@@ -440,8 +517,8 @@ export default function CartPage() {
                                     </AccordionDetails>
                                 </Accordion>
 
-                                {/* PAYMENT */}
-                                <Accordion expanded={expanded === "payment"} disabled={Object.values(errors).some(e => e)} onChange={(_, e) => setExpanded(e ? "payment" : false)}>
+                                {/* Accordion: Payment */}
+                                <Accordion expanded={expanded === "payment"} disabled={!addressAllOk} onChange={(_, e) => setExpanded(e ? "payment" : false)}>
                                     <AccordionSummary expandIcon={expanded === "payment" ? <SaveIcon /> : <EditIcon />} onClick={() => setExpanded(expanded === "payment" ? false : "payment")}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
                                             <ShippingIcon sx={{ mr: 1 }} /><h4>3. Payment & Delivery</h4>

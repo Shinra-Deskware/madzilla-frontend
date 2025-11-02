@@ -120,7 +120,7 @@ export default function MobileOrdersPage({ page }) {
                                 <div className="summary-actions">
 
                                     {/* ✅ Invoice */}
-                                    {mobileOrder.paymentStatus === "PAID" &&
+                                    {["PAID", "REFUND_DONE"].includes(mobileOrder.paymentStatus) &&
                                         <Tooltip title="Invoice">
                                             <div
                                                 className="action-item"
@@ -155,16 +155,24 @@ export default function MobileOrdersPage({ page }) {
                                     {/* ✅ Pay */}
                                     {mobileOrder.paymentStatus === "PENDING" &&
                                         <Tooltip title="Pay">
-                                            <div className="action-item" onClick={() => { startPayment(mobileOrder); setMobileSummaryOpen(false) }}>
+                                            <div className="action-item" onClick={() => { startPayment({ ...mobileOrder, orderId: mobileOrder.orderId }); setMobileSummaryOpen(false) }}>
                                                 <CurrencyRupeeIcon /><span>Pay</span>
                                             </div>
                                         </Tooltip>
                                     }
 
                                     {/* ✅ Cancel */}
-                                    {mobileOrder.currentStep <= 2 &&
-                                        mobileOrder.status !== ORDER_STATUS.CANCELLED &&
-                                        mobileOrder.paymentStatus !== PAYMENT_STATUS.REFUND_DONE && (
+                                    {[
+                                        ORDER_STATUS.PENDING,
+                                        ORDER_STATUS.ORDER_PLACED
+                                    ].includes(mobileOrder.status) &&
+                                        mobileOrder.paymentStatus !== PAYMENT_STATUS.REFUND_DONE &&
+                                        ![
+                                            ORDER_STATUS.RETURN_REQUESTED,
+                                            ORDER_STATUS.RETURN_ACCEPTED,
+                                            ORDER_STATUS.RETURN_RECEIVED,
+                                            ORDER_STATUS.RETURNED
+                                        ].includes(mobileOrder.status) && (
                                             <Tooltip title="Cancel Order">
                                                 <div className="action-item" onClick={() => { setCancelOtpOpen(true); setMobileSummaryOpen(false) }}>
                                                     <CancelIcon /><span>Cancel</span>
@@ -180,7 +188,8 @@ export default function MobileOrdersPage({ page }) {
                                             ORDER_STATUS.RETURN_ACCEPTED,
                                             ORDER_STATUS.RETURN_RECEIVED,
                                             ORDER_STATUS.RETURNED
-                                        ].includes(mobileOrder.status) && (
+                                        ].includes(effectiveStatus(mobileOrder))
+                                        && (
                                             <Tooltip title="Return Order">
                                                 <div className="action-item" onClick={() => {
                                                     setComplaintType("RETURN");
@@ -332,7 +341,7 @@ export default function MobileOrdersPage({ page }) {
                                 setComplaintLoading(true);
                                 const { data } = await http.post("/api/complaints", {
                                     orderId: complaintOrder.orderId,
-                                    userPhone: page?.user?.phoneNumber,
+                                    emailId: page?.user?.emailId,
                                     type: complaintType,
                                     title: complaintTitle.trim(),
                                     message: complaintText.trim()
@@ -380,7 +389,7 @@ export default function MobileOrdersPage({ page }) {
             <CancelOrderOtp
                 open={cancelOtpOpen}
                 onClose={() => setCancelOtpOpen(false)}
-                userPhone={page?.user?.phoneNumber}
+                userEmail={page?.user?.emailId}
                 onVerified={cancelOrder}
             />
         </>

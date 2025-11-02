@@ -91,6 +91,10 @@ body {
     align-items: center;
 }
 
+.store-links a {
+    pointer-events: none;
+}
+
 .store-links img {
     width: 90px;
     opacity: 0.8;
