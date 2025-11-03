@@ -131,19 +131,15 @@ export default function OrdersPage() {
 
 
     const startPayment = async (o) => {
-        // New Razorpay order only if no order OR payment failed before
-        if (
-            !o.razorpay_order_id ||
-            [PAYMENT_STATUS.FAILED, PAYMENT_STATUS.PAYMENT_FAILED].includes(o.paymentStatus)
-        ) {
-            const { data } = await http.post("/api/payment/neworder", {
-                items: o.items,
-                shipping: o.shipping,
-                address: o.address
-            });
-            return openRazorpay(data);
-        }
+        const { data } = await http.post("/api/payment/neworder", {
+            items: o.items,
+            shipping: o.shipping,
+            address: o.address,
+            retryOrderId: o.orderId, // 👈 key line
+        });
+        openRazorpay(data);
     };
+
 
     const verifyPayment = async (res, o) => {
         try {
