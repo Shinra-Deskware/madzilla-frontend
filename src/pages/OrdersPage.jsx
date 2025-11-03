@@ -284,14 +284,14 @@ export default function OrdersPage() {
                                         {shownStatus === ORDER_STATUS.RETURN_ACCEPTED && <div className="cancelled-box">Return Accepted — Send item back</div>}
                                         {shownStatus === ORDER_STATUS.RETURN_RECEIVED && <div className="cancelled-box">Item Received — Refund in progress</div>}
                                         {shownStatus === ORDER_STATUS.RETURN_REJECTED && <div className="cancelled-box">Return Rejected ❌</div>}
-                                        {shownStatus === ORDER_STATUS.RETURNED && <div className="cancelled-box">Refund Completed — Returned ✅</div>}
+                                        {shownStatus === ORDER_STATUS.RETURNED && <div className="cancelled-box">Refund Completed — Returned ✅Amount will be reflected within 7 days.</div>}
 
                                         {/* ✅ Cancelled / Refund */}
                                         {o.status === ORDER_STATUS.CANCELLED && (
                                             <>
                                                 {o.paymentStatus === PAYMENT_STATUS.REFUND_REQUESTED && <div className="cancelled-box">Refund Requested — Awaiting approval</div>}
                                                 {o.paymentStatus === PAYMENT_STATUS.REFUND_INITIATED && <div className="cancelled-box">Refund Initiated</div>}
-                                                {o.paymentStatus === PAYMENT_STATUS.REFUND_DONE && <div className="cancelled-box">Refund Completed ✅</div>}
+                                                {o.paymentStatus === PAYMENT_STATUS.REFUND_DONE && <div className="cancelled-box">Refund Completed ✅ Amount will be reflected within 7 days.</div>}
                                                 {![
                                                     PAYMENT_STATUS.REFUND_REQUESTED,
                                                     PAYMENT_STATUS.REFUND_INITIATED,

@@ -251,7 +251,7 @@ export default function MobileOrdersPage({ page }) {
                                         return <div className="cancelled-box">Return Rejected ❌</div>;
 
                                     if (st === ORDER_STATUS.RETURNED)
-                                        return <div className="cancelled-box">Refund Completed — Returned ✅</div>;
+                                        return <div className="cancelled-box">Refund Completed — Returned ✅Amount will be reflected within 7 days.</div>;
 
                                     if (mobileOrder.status === ORDER_STATUS.CANCELLED) {
 
@@ -262,7 +262,7 @@ export default function MobileOrdersPage({ page }) {
                                             return <div className="cancelled-box">Refund Initiated</div>;
 
                                         if (mobileOrder.paymentStatus === PAYMENT_STATUS.REFUND_DONE)
-                                            return <div className="cancelled-box">Refund Completed ✅</div>;
+                                            return <div className="cancelled-box">Refund Completed ✅Amount will be reflected within 7 days.</div>;
 
                                         return <div className="cancelled-box">Order Cancelled ❌</div>;
                                     }
