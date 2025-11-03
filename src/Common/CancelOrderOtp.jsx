@@ -134,7 +134,7 @@ export default function CancelOrderOtp({ open, onClose, userEmail, onVerified })
         setLoading(true); setErrorMsg("");
         if (userEmail === email) {
             try {
-                const { data } = await sendOtp({ identifier: email, channel: "email" });
+                const { data } = await sendOtp({ identifier: email, purpose: "cancel_order" });
                 setRequestId(data.requestId);
                 setStep(2);
                 setResendIn(RESEND_SECONDS);
@@ -160,7 +160,7 @@ export default function CancelOrderOtp({ open, onClose, userEmail, onVerified })
         if (!otp || otp.length !== OTP_LEN) return;
         setLoading(true); setErrorMsg("");
         try {
-            await verifyOtp({ requestId, otp });
+            await verifyOtp({ requestId, otp, purpose: "cancel_order" });
             setStep(3);
             setTimeout(() => {
                 onVerified?.(); // ✅ triggers cancel

@@ -98,7 +98,7 @@ export default function OrdersPage() {
     const fetchOrders = async () => {
         if (!user?.emailId) return setLoading(false);
         try {
-            const res = await http.get(`/api/users/email/${user.emailId}/orders`);
+            const res = await http.get(`/api/users/orders`);
             const list = res.data.orders || [];
             setOrders(list);
             if (list.length) setExpanded(list[0].orderId);
@@ -131,24 +131,18 @@ export default function OrdersPage() {
 
 
     const startPayment = async (o) => {
-        if (o.razorpay_order_id && o.paymentStatus === "PENDING")
-            return openRazorpay({
-                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
-                order_id: o.razorpay_order_id,
-                amount: (o.total + o.shipping) * 100,
-                currency: "INR",
-                orderId: o.orderId // ✅ ADD THIS
+        // New Razorpay order only if no order OR payment failed before
+        if (
+            !o.razorpay_order_id ||
+            [PAYMENT_STATUS.FAILED, PAYMENT_STATUS.PAYMENT_FAILED].includes(o.paymentStatus)
+        ) {
+            const { data } = await http.post("/api/payment/neworder", {
+                items: o.items,
+                shipping: o.shipping,
+                address: o.address
             });
-
-        const { data } = await http.post("/api/payment/order", {
-            emailId: user.emailId,
-            items: o.items,
-            total: o.total,
-            shipping: o.shipping,
-            address: o.address,
-            orderId: o.orderId
-        });
-        openRazorpay(data);
+            return openRazorpay(data);
+        }
     };
 
     const verifyPayment = async (res, o) => {
@@ -159,7 +153,6 @@ export default function OrdersPage() {
                 emailId: user.emailId,   // ✅ user email
             });
             await fetchOrders();       // refresh UI
-            localStorage.removeItem("cart");
         } catch (err) {
             console.error(err);
             alert("Payment verification failed. Please contact support.");
@@ -170,7 +163,7 @@ export default function OrdersPage() {
     const selectedOrder = orders.find(o => o.orderId === expanded);
     const cancelOrder = async () => {
         if (!selectedOrder || selectedOrder.currentStep >= 3) return;
-        await http.post(`/api/users/email/${user.emailId}/orders/${selectedOrder.orderId}/cancel`);
+        await http.post(`/api/payment/order/${selectedOrder.orderId}/cancel`);
         await fetchOrders();
     };
 

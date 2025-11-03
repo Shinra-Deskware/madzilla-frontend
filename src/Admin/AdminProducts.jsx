@@ -1,31 +1,31 @@
 import React, { useEffect, useState, useMemo } from "react";
 import {
     Table, TableBody, TableCell, TableContainer, TableHead, TableRow,
-    Paper, CircularProgress, TextField, TablePagination, Button, Stack
+    Paper, CircularProgress, TextField, TablePagination, Button, Stack, Snackbar, Alert
 } from "@mui/material";
+import { Select, MenuItem } from "@mui/material";
 import http from "../api/http";
 import "./Styles/AdminProducts.css";
-import { Select, MenuItem } from "@mui/material";
 
 export default function AdminProducts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filters, setFilters] = useState({
-        key: "", title: "", stock: "", price: "", originalPrice: "", discount: "", rating: "", totalReviews: ""
+        key: "", productId: "", title: "", stock: "", price: "", originalPrice: "", discount: "", rating: "", totalReviews: ""
     });
-
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [editRow, setEditRow] = useState(null);
     const [editData, setEditData] = useState({});
+    const [toast, setToast] = useState({ open: false, msg: "", type: "success" });
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const res = await http.get("/api/sections/products");
                 setProducts(res.data || []);
-            } catch (err) {
-                console.error("Fetch products failed:", err);
+            } catch {
+                setToast({ open: true, msg: "Failed to fetch products", type: "error" });
             } finally {
                 setLoading(false);
             }
@@ -48,62 +48,70 @@ export default function AdminProducts() {
         setEditData({});
     };
 
-    const handleSave = async () => {
-        try {
-            await http.put(`/api/admin/products/${editData._id}`, editData);
-            setProducts((prev) => prev.map((p) => (p._id === editRow ? editData : p)));
-            setEditRow(null);
-        } catch (err) {
-            console.error("Save failed:", err);
-        }
-    };
-
     const handleChangeEdit = (field, value) => {
         setEditData((prev) => ({ ...prev, [field]: value }));
     };
 
-    const filteredProducts = useMemo(() => {
-        return products.filter((p) => {
-            return (
-                (!filters.key || String(p.key).toLowerCase().includes(filters.key.toLowerCase())) &&
-                (!filters.title || String(p.title).toLowerCase().includes(filters.title.toLowerCase())) &&
-                (!filters.stock || String(p.stock).toLowerCase().includes(filters.stock.toLowerCase())) &&
-                (!filters.price || String(p.price).toLowerCase().includes(filters.price.toLowerCase())) &&
-                (!filters.originalPrice || String(p.originalPrice).toLowerCase().includes(filters.originalPrice.toLowerCase())) &&
-                (!filters.discount || String(p.discount).toLowerCase().includes(filters.discount.toLowerCase())) &&
-                (!filters.rating || String(p.rating).toLowerCase().includes(filters.rating.toLowerCase())) &&
-                (!filters.totalReviews || String(p.totalReviews).toLowerCase().includes(filters.totalReviews.toLowerCase()))
-            );
-        });
-    }, [products, filters]);
+    const handleSave = async () => {
+        if (!editData.title?.trim()) {
+            return setToast({ open: true, msg: "Title cannot be empty", type: "warning" });
+        }
 
+        if (!editData.productId?.trim()) {
+            return setToast({ open: true, msg: "Product ID cannot be empty", type: "warning" });
+        }
+        const body = {
+            ...editData,
+            price: Number(editData.price),
+            productId: String(editData.productId),
+            originalPrice: Number(editData.originalPrice),
+            discount: Number(editData.discount),
+            rating: Number(editData.rating),
+            totalReviews: Number(editData.totalReviews),
+            stock: editData.stock === true || editData.stock === "true",
+        };
+
+        try {
+            await http.put(`/api/admin/products/${editRow}`, body);
+            setProducts((prev) => prev.map((p) => (p._id === editRow ? body : p)));
+            setToast({ open: true, msg: "✅ Product updated", type: "success" });
+            setEditRow(null);
+        } catch {
+            setToast({ open: true, msg: "❌ Update failed", type: "error" });
+        }
+    };
+
+    const filteredProducts = useMemo(() => {
+        return products.filter((p) =>
+            Object.keys(filters).every((key) =>
+                !filters[key] || String(p[key]).toLowerCase().includes(filters[key].toLowerCase())
+            )
+        );
+    }, [products, filters]);
 
     const paginatedProducts = useMemo(() => {
         const start = page * rowsPerPage;
         return filteredProducts.slice(start, start + rowsPerPage);
     }, [filteredProducts, page, rowsPerPage]);
 
-    const handleChangePage = (_, newPage) => setPage(newPage);
-    const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(parseInt(e.target.value, 10));
-        setPage(0);
-    };
-
-    if (loading)
+    if (loading) {
         return (
             <div className="admin-products-loading">
                 <CircularProgress sx={{ color: "#fff" }} />
             </div>
         );
+    }
 
     return (
         <div className="admin-products">
             <h2>🧸 All Products</h2>
+
             <TableContainer component={Paper} className="admin-products-table">
                 <Table>
                     <TableHead>
                         <TableRow>
                             <TableCell>Key</TableCell>
+                            <TableCell>Product ID</TableCell>
                             <TableCell>Title</TableCell>
                             <TableCell>Stock</TableCell>
                             <TableCell>Price</TableCell>
@@ -141,17 +149,27 @@ export default function AdminProducts() {
                             paginatedProducts.map((p) => (
                                 <TableRow key={p._id}>
                                     <TableCell>{p.key}</TableCell>
+
                                     <TableCell>
                                         {editRow === p._id ? (
                                             <TextField
                                                 size="small"
-                                                value={editData.title || ""}
+                                                value={editData.productId}
+                                                onChange={(e) => handleChangeEdit("productId", e.target.value)}
+                                            />
+                                        ) : p.productId}
+                                    </TableCell>
+
+                                    <TableCell>
+                                        {editRow === p._id ? (
+                                            <TextField
+                                                size="small"
+                                                value={editData.title}
                                                 onChange={(e) => handleChangeEdit("title", e.target.value)}
                                             />
-                                        ) : (
-                                            p.title
-                                        )}
+                                        ) : p.title}
                                     </TableCell>
+
                                     <TableCell>
                                         {editRow === p._id ? (
                                             <Select
@@ -162,72 +180,29 @@ export default function AdminProducts() {
                                                 <MenuItem value={true}>In Stock</MenuItem>
                                                 <MenuItem value={false}>Out of Stock</MenuItem>
                                             </Select>
-                                        ) : (
-                                            p.stock ? "In Stock" : "Out of Stock"
-                                        )}
+                                        ) : p.stock ? "In Stock" : "Out of Stock"}
                                     </TableCell>
-                                    <TableCell>
-                                        {editRow === p._id ? (
-                                            <TextField
-                                                size="small"
-                                                value={editData.price || ""}
-                                                onChange={(e) => handleChangeEdit("price", e.target.value)}
-                                            />
-                                        ) : (
-                                            p.price
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {editRow === p._id ? (
-                                            <TextField
-                                                size="small"
-                                                value={editData.originalPrice || ""}
-                                                onChange={(e) => handleChangeEdit("originalPrice", e.target.value)}
-                                            />
-                                        ) : (
-                                            p.originalPrice
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {editRow === p._id ? (
-                                            <TextField
-                                                size="small"
-                                                value={editData.discount || ""}
-                                                onChange={(e) => handleChangeEdit("discount", e.target.value)}
-                                            />
-                                        ) : (
-                                            p.discount
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {editRow === p._id ? (
-                                            <TextField
-                                                size="small"
-                                                value={editData.rating || ""}
-                                                onChange={(e) => handleChangeEdit("rating", e.target.value)}
-                                            />
-                                        ) : (
-                                            p.rating
-                                        )}
-                                    </TableCell>
-                                    <TableCell>
-                                        {editRow === p._id ? (
-                                            <TextField
-                                                size="small"
-                                                value={editData.totalReviews || ""}
-                                                onChange={(e) => handleChangeEdit("totalReviews", e.target.value)}
-                                            />
-                                        ) : (
-                                            p.totalReviews
-                                        )}
-                                    </TableCell>
+
+                                    {["price", "originalPrice", "discount", "rating", "totalReviews"].map((field) => (
+                                        <TableCell key={field}>
+                                            {editRow === p._id ? (
+                                                <TextField
+                                                    size="small"
+                                                    type="number"
+                                                    value={editData[field]}
+                                                    onChange={(e) => handleChangeEdit(field, e.target.value)}
+                                                />
+                                            ) : p[field]}
+                                        </TableCell>
+                                    ))}
+
                                     <TableCell align="right">
                                         {editRow === p._id ? (
                                             <Stack direction="row" spacing={1}>
                                                 <Button variant="contained" color="success" size="small" onClick={handleSave}>
                                                     Save
                                                 </Button>
-                                                <Button variant="outlined" color="inherit" size="small" onClick={handleCancel}>
+                                                <Button variant="outlined" size="small" onClick={handleCancel}>
                                                     Cancel
                                                 </Button>
                                             </Stack>
@@ -248,16 +223,23 @@ export default function AdminProducts() {
                 component="div"
                 count={filteredProducts.length}
                 page={page}
-                onPageChange={handleChangePage}
+                onPageChange={(_, newPage) => setPage(newPage)}
                 rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[10, 20, 30]}
-                sx={{
-                    color: "#fff",
-                    "& .MuiSelect-icon": { color: "#fff" },
-                    "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": { color: "#fff" },
+                onRowsPerPageChange={(e) => {
+                    setRowsPerPage(parseInt(e.target.value));
+                    setPage(0);
                 }}
+                rowsPerPageOptions={[10, 20, 30]}
+                sx={{ color: "#fff" }}
             />
+
+            <Snackbar
+                open={toast.open}
+                autoHideDuration={3000}
+                onClose={() => setToast((p) => ({ ...p, open: false }))}
+            >
+                <Alert severity={toast.type}>{toast.msg}</Alert>
+            </Snackbar>
         </div>
     );
 }

@@ -30,64 +30,57 @@ const gradientBg = {
     background: "linear-gradient(135deg, #7A5CF4 0%, #6A39F6 45%, #8E5AF7 100%)",
 };
 
-const StepContainer = ({ children }) => (
-    <Box
-        sx={{
-            position: "relative",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            textAlign: "center",
-            p: { xs: 3, md: 4 },
-            minHeight: { xs: "50vh", md: 420 },
-            bgcolor: "#000",
-            color: "#fff",
-            justifyContent: 'center'
-        }}
-    >
-        {children}
-    </Box>
-);
-
-const HeaderIcon = ({ children }) => (
-    <Box
-        sx={{
-            width: 72,
-            height: 72,
-            borderRadius: 3,
-            display: "grid",
-            placeItems: "center",
-            ...gradientBg,
-            color: "#fff",
-            boxShadow: "0 10px 30px rgba(123, 90, 246, .35)",
-            mt: { xs: 1, md: 0 },
-        }}
-    >
-        {children}
-    </Box>
-);
-
 const MotionBox = motion(Box);
+
+function StepContainer({ children }) {
+    return (
+        <Box
+            sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                textAlign: "center",
+                p: { xs: 3, md: 4 },
+                minHeight: { xs: "50vh", md: 420 },
+                bgcolor: "#000",
+                color: "#fff",
+            }}
+        >
+            {children}
+        </Box>
+    );
+}
+
+function HeaderIcon({ children }) {
+    return (
+        <Box
+            sx={{
+                width: 72,
+                height: 72,
+                borderRadius: 3,
+                display: "grid",
+                placeItems: "center",
+                ...gradientBg,
+                color: "#fff",
+                boxShadow: "0 10px 30px rgba(123,90,246,.35)",
+                mt: { xs: 1, md: 0 },
+            }}
+        >
+            {children}
+        </Box>
+    );
+}
 
 function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
     const inputsRef = useRef([]);
-    const handleChange = (index, v) => {
+    const handleChange = (i, v) => {
         const clean = v.replace(/\D/g, "").slice(0, 1);
-        const next = value.split("");
-        next[index] = clean;
-        onChange(next.join(""));
-        if (clean && index < OTP_LEN - 1) inputsRef.current[index + 1]?.focus();
+        const arr = value.split("");
+        arr[i] = clean;
+        onChange(arr.join(""));
+        if (clean && i < OTP_LEN - 1) inputsRef.current[i + 1]?.focus();
     };
-
-    const handleKeyDown = (index, e) => {
-        if (e.key === "Backspace" && !value[index] && index > 0)
-            inputsRef.current[index - 1]?.focus();
-        if (e.key === "ArrowLeft" && index > 0)
-            inputsRef.current[index - 1]?.focus();
-        if (e.key === "ArrowRight" && index < OTP_LEN - 1)
-            inputsRef.current[index + 1]?.focus();
-    };
-
     return (
         <Box sx={{ display: "flex", gap: 1.5, justifyContent: "center", mt: 2 }}>
             {Array.from({ length: OTP_LEN }).map((_, i) => (
@@ -96,26 +89,19 @@ function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
                     inputRef={(el) => (inputsRef.current[i] = el)}
                     value={value[i] || ""}
                     onChange={(e) => handleChange(i, e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(i, e)}
                     inputProps={{
                         maxLength: 1,
                         inputMode: "numeric",
-                        autoComplete: "one-time-code",
                         style: {
                             textAlign: "center",
                             fontSize: "1.2rem",
-                            width: window.innerWidth < 600 ? "0.6rem" : "1.2rem",
-                            height: window.innerWidth < 600 ? "1rem" : "1rem",
+                            width: "1.4rem",
                             color: "#fff",
                         },
                     }}
                     sx={{
                         input: { color: "#fff" },
-                        "& .MuiOutlinedInput-root": {
-                            "& fieldset": { borderColor: "#555" },
-                            "&:hover fieldset": { borderColor: "#888" },
-                            "&.Mui-focused fieldset": { borderColor: "#fff" },
-                        },
+                        "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" },
                     }}
                     disabled={disabled}
                 />
@@ -126,13 +112,11 @@ function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
 
 export default function OtpPopup({ open, onClose, onVerified }) {
     const isMobile = useMediaQuery("(max-width:768px)");
-    const [step, setStep] = useState(1);
-    const [mobile, setMobile] = useState("");
-    const [mobileOtp, setMobileOtp] = useState("");
     const { fetchUser } = useUser();
-    const EMAIL_OTP_MODE = true;
 
-    const [showInputError, setShowInputError] = useState(false);
+    const [step, setStep] = useState(1);
+    const [identifier, setIdentifier] = useState("");
+    const [otp, setOtp] = useState("");
     const [requestId, setRequestId] = useState(null);
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState("");
@@ -141,27 +125,35 @@ export default function OtpPopup({ open, onClose, onVerified }) {
     const OTP_LEN = 6;
     const RESEND_SECONDS = 30;
 
-    const handleResendOtp = async () => {
-        if (resendIn > 0) return;
-        await handleGetOtp();
+    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const PHONE_RX = /^[6-9]\d{9}$/;
+
+    const detectMode = (v) => (EMAIL_RX.test(v) ? "email" : PHONE_RX.test(v) ? "phone" : null);
+
+    const handleReset = () => {
+        setStep(1);
+        setIdentifier("");
+        setOtp("");
+        setRequestId(null);
+        setErrorMsg("");
+        setResendIn(0);
+        onClose();
     };
 
     useEffect(() => {
-        if (!open) {
-            handleReset();
-        }
-    }, [open])
+        if (!open) handleReset();
+    }, [open]);
 
     const handleGetOtp = async () => {
-        const msisdn = mobile.trim();
-        if (!msisdn) {
-            setShowInputError(true);
+        const mode = detectMode(identifier.trim());
+        if (!mode) {
+            setErrorMsg("Enter valid email or 10-digit mobile number.");
             return;
         }
         setLoading(true);
         setErrorMsg("");
         try {
-            const { data } = await sendOtp({ identifier: mobile.trim() });
+            const { data } = await sendOtp({ identifier: identifier.trim(), purpose: "login" });
             setRequestId(data.requestId);
             setStep(2);
             setResendIn(RESEND_SECONDS);
@@ -174,7 +166,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                     return s - 1;
                 });
             }, 1000);
-        } catch (e) {
+        } catch {
             setErrorMsg("Failed to send OTP. Try again.");
         } finally {
             setLoading(false);
@@ -182,160 +174,125 @@ export default function OtpPopup({ open, onClose, onVerified }) {
     };
 
     const handleVerify = async () => {
-        if (!mobileOtp || mobileOtp.length !== OTP_LEN) return;
+        if (otp.length !== OTP_LEN) return;
         setLoading(true);
         setErrorMsg("");
         try {
-            await verifyOtp({ requestId, otp: mobileOtp });
-            await fetchUser();             // 👈 instantly refresh user context
+            await verifyOtp({ requestId, otp, purpose: "login" });
+            await fetchUser();
             setStep(3);
             setTimeout(() => {
-                onVerified?.(); // callback to place order 
+                onVerified?.();
                 onClose();
-            }, 1000); // close popup after success
-        } catch (e) {
+            }, 1000);
+        } catch {
             setErrorMsg("Invalid or expired OTP.");
         } finally {
             setLoading(false);
         }
     };
 
-    const handleReset = () => {
-        setStep(1);
-        setMobile("");
-        setMobileOtp("");
-        setShowInputError(false);
-        setErrorMsg("");
-        setResendIn(0);
-        onClose();
-    };
-
     const renderStep = () => {
         switch (step) {
             case 1:
                 return (
-                    <MotionBox>
-                        <StepContainer>
-                            <HeaderIcon>
-                                {EMAIL_OTP_MODE ? <MarkEmailUnreadRoundedIcon fontSize="large" /> : <LockRoundedIcon fontSize="large" />}
-                            </HeaderIcon>
-                            <Typography variant="h6" fontWeight={600} sx={{ my: 2 }}>
-                                OTP Verification
-                            </Typography>
-                            <Typography variant="body2" color="grey.400">
-                                We’ll send you a one-time OTP on {EMAIL_OTP_MODE ? "Email" : "WhatsApp"}
-                            </Typography>
-                            <TextField
-                                fullWidth
-                                placeholder={EMAIL_OTP_MODE ? "Enter Email" : "Enter Mobile Number (+91...)"}
-                                value={mobile}
-                                type={EMAIL_OTP_MODE ? "email" : "tel"}
-                                onChange={(e) => setMobile(e.target.value)}
-                                error={showInputError && !mobile.trim()}
-                                helperText={
-                                    showInputError && !mobile.trim() ? EMAIL_OTP_MODE ? "Enter your email" : "Enter your mobile": ""
-                                }
-                                sx={{
-                                    mt: 2,
-                                    input: { color: "#fff" },
-                                    "& .MuiOutlinedInput-root": {
-                                        "& fieldset": { borderColor: "#555" },
-                                    },
-                                }}
-                            />
-                            {errorMsg && (
-                                <Typography color="error" variant="caption" sx={{ mt: 1 }}>
-                                    {errorMsg}
-                                </Typography>
-                            )}
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, ...gradientBg }}
-                                onClick={handleGetOtp}
-                                disabled={loading}
-                            >
-                                {loading ? "Sending..." : (EMAIL_OTP_MODE ? "Get OTP on Email" : "Get OTP on WhatsApp")}
-                            </Button>
-                        </StepContainer>
-                    </MotionBox>
+                    <StepContainer>
+                        <HeaderIcon>
+                            <LockRoundedIcon fontSize="large" />
+                        </HeaderIcon>
+                        <Typography variant="h6" sx={{ my: 2 }}>
+                            OTP Verification
+                        </Typography>
+                        <Typography variant="body2" color="grey.400">
+                            Enter your email or phone number
+                        </Typography>
+                        <TextField
+                            fullWidth
+                            placeholder="Enter Email or Mobile Number"
+                            value={identifier}
+                            onChange={(e) => setIdentifier(e.target.value)}
+                            error={!!errorMsg}
+                            helperText={errorMsg}
+                            sx={{
+                                mt: 2,
+                                input: { color: "#fff" },
+                                "& .MuiOutlinedInput-root fieldset": { borderColor: "#555" },
+                            }}
+                        />
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, ...gradientBg }}
+                            onClick={handleGetOtp}
+                            disabled={loading}
+                        >
+                            {loading ? "Sending..." : "Get OTP"}
+                        </Button>
+                    </StepContainer>
                 );
-
             case 2:
                 return (
-                    <MotionBox>
-                        <StepContainer>
-                            <HeaderIcon>
-                                <MarkEmailUnreadRoundedIcon fontSize="large" />
-                            </HeaderIcon>
-                            <Typography variant="h6" fontWeight={600} sx={{ mt: 2 }}>
-                                Enter OTP
+                    <StepContainer>
+                        <HeaderIcon>
+                            <MarkEmailUnreadRoundedIcon fontSize="large" />
+                        </HeaderIcon>
+                        <Typography variant="h6" sx={{ mt: 2 }}>
+                            Enter OTP
+                        </Typography>
+                        <Typography variant="body2" color="grey.400">
+                            Sent to {identifier}
+                        </Typography>
+                        <OtpBoxes
+                            value={otp}
+                            onChange={(v) => {
+                                const clean = v.replace(/\D/g, "").slice(0, OTP_LEN);
+                                setOtp(clean);
+                                if (clean.length === OTP_LEN) handleVerify();
+                            }}
+                            OTP_LEN={OTP_LEN}
+                        />
+                        <Typography variant="body2" sx={{ mt: 1 }}>
+                            {resendIn > 0
+                                ? `Resend in ${resendIn}s`
+                                : (
+                                    <span
+                                        style={{ color: "#7A5CF4", cursor: "pointer" }}
+                                        onClick={handleGetOtp}
+                                    >
+                                        Resend OTP
+                                    </span>
+                                )}
+                        </Typography>
+                        {errorMsg && (
+                            <Typography color="error" variant="caption" sx={{ mt: 1 }}>
+                                {errorMsg}
                             </Typography>
-                            <Typography variant="body2" color="grey.400">
-                                Sent to {EMAIL_OTP_MODE ? "Email" : "WhatsApp"} {mobile}
-                            </Typography>
-                            <OtpBoxes
-                                value={mobileOtp}
-                                onChange={(v) => {
-                                    const clean = v.replace(/\D/g, "").slice(0, OTP_LEN);
-                                    setMobileOtp(clean);
-                                    if (clean.length === OTP_LEN) handleVerify();
-                                }}
-                                OTP_LEN={OTP_LEN}
-                            />
-                            <Typography variant="body2" sx={{ mt: 1 }}>
-                                {resendIn > 0
-                                    ? `Resend in ${resendIn}s`
-                                    : (
-                                        <span
-                                            style={{ color: "#7A5CF4", cursor: "pointer" }}
-                                            onClick={handleResendOtp}
-                                        >
-                                            Resend OTP
-                                        </span>
-                                    )}
-                            </Typography>
-                            {errorMsg && (
-                                <Typography color="error" variant="caption" sx={{ mt: 1 }}>
-                                    {errorMsg}
-                                </Typography>
-                            )}
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, ...gradientBg }}
-                                onClick={handleVerify}
-                                disabled={loading}
-                            >
-                                {loading ? "Verifying..." : "Verify"}
-                            </Button>
-                        </StepContainer>
-                    </MotionBox>
+                        )}
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            sx={{ mt: 3, ...gradientBg }}
+                            onClick={handleVerify}
+                            disabled={loading}
+                        >
+                            {loading ? "Verifying..." : "Verify"}
+                        </Button>
+                    </StepContainer>
                 );
-
             case 3:
                 return (
-                    <MotionBox>
-                        <StepContainer>
-                            <HeaderIcon>
-                                <CheckCircleRoundedIcon fontSize="large" />
-                            </HeaderIcon>
-                            <Typography variant="h6" fontWeight={600}>
-                                Verified
-                            </Typography>
-                            <Typography variant="body2" color="grey.400">
-                                Your number has been verified successfully
-                            </Typography>
-                            <Button
-                                fullWidth
-                                variant="contained"
-                                sx={{ mt: 3, ...gradientBg }}
-                                onClick={handleReset}
-                            >
-                                Done
-                            </Button>
-                        </StepContainer>
-                    </MotionBox>
+                    <StepContainer>
+                        <HeaderIcon>
+                            <CheckCircleRoundedIcon fontSize="large" />
+                        </HeaderIcon>
+                        <Typography variant="h6">Verified</Typography>
+                        <Typography variant="body2" color="grey.400">
+                            You have been verified successfully
+                        </Typography>
+                        <Button fullWidth variant="contained" sx={{ mt: 3, ...gradientBg }} onClick={handleReset}>
+                            Done
+                        </Button>
+                    </StepContainer>
                 );
             default:
                 return null;
@@ -354,7 +311,6 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                             ...paperCommonSx,
                             width: "90%",
                             left: "5%",
-                            transform: "translateX(-50%)",
                             minHeight: "40vh",
                             maxHeight: "70vh",
                         },
@@ -362,13 +318,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                 >
                     <IconButton
                         onClick={onClose}
-                        sx={{
-                            position: "absolute",
-                            top: 8,
-                            right: 8,
-                            zIndex: 1,
-                            color: "#fff",
-                        }}
+                        sx={{ position: "absolute", top: 8, right: 8, color: "#fff" }}
                     >
                         <CloseRoundedIcon />
                     </IconButton>
@@ -391,13 +341,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                     <DialogContent sx={{ p: 0, position: "relative" }}>
                         <IconButton
                             onClick={onClose}
-                            sx={{
-                                position: "absolute",
-                                top: 8,
-                                right: 8,
-                                zIndex: 1,
-                                color: "#fff",
-                            }}
+                            sx={{ position: "absolute", top: 8, right: 8, color: "#fff" }}
                         >
                             <CloseRoundedIcon />
                         </IconButton>

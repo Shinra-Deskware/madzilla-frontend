@@ -242,7 +242,7 @@ export default function AdminOrders() {
                                                             color="success"
                                                             size="small"
                                                             onClick={async () => {
-                                                                await http.put(`/api/admin/orders/${o.orderId}/refund-approve`);
+                                                                await http.put(`/api/admin/orders/${o.orderId}/return-approve`);
                                                                 window.location.reload();
                                                             }}
                                                         >
@@ -255,7 +255,7 @@ export default function AdminOrders() {
                                                             size="small"
                                                             onClick={async () => {
                                                                 const reason = prompt("Reason?");
-                                                                await http.put(`/api/admin/orders/${o.orderId}/refund-reject`, { reason });
+                                                                await http.put(`/api/admin/orders/${o.orderId}/return-reject`, { reason });
                                                                 window.location.reload();
                                                             }}
                                                         >

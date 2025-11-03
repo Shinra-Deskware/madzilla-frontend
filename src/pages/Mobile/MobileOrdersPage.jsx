@@ -57,7 +57,7 @@ export default function MobileOrdersPage({ page }) {
         complaintText, setComplaintText, complaintTitle, setComplaintTitle,
         fetchOrders, complaintType, setComplaintType, downloadInvoice, invoiceLoading
     } = page;
-
+    if (!page?.user?.emailId) return null;
     const [mobileOrder, setMobileOrder] = useState(null);
     const [mobileSummaryOpen, setMobileSummaryOpen] = useState(false);
     const [complaintLoading, setComplaintLoading] = useState(false);
@@ -155,7 +155,21 @@ export default function MobileOrdersPage({ page }) {
                                     {/* ✅ Pay */}
                                     {mobileOrder.paymentStatus === "PENDING" &&
                                         <Tooltip title="Pay">
-                                            <div className="action-item" onClick={() => { startPayment({ ...mobileOrder, orderId: mobileOrder.orderId }); setMobileSummaryOpen(false) }}>
+                                            <div className="action-item"
+                                                onClick={async () => {
+                                                    setMobileSummaryOpen(false);
+
+                                                    if (mobileOrder.razorpay_order_id && mobileOrder.paymentStatus === PAYMENT_STATUS.PENDING) {
+                                                        const { data } = await http.post("/api/payment/neworder", {
+                                                            items: mobileOrder.items,
+                                                            shipping: mobileOrder.shipping,
+                                                            address: mobileOrder.address
+                                                        });
+                                                        return startPayment(data);
+                                                    }
+                                                    return startPayment({ ...mobileOrder, orderId: mobileOrder.orderId });
+                                                }}
+                                            >
                                                 <CurrencyRupeeIcon /><span>Pay</span>
                                             </div>
                                         </Tooltip>
@@ -211,7 +225,7 @@ export default function MobileOrdersPage({ page }) {
                                     <span>🏠 Address:</span>
                                     <span>
                                         {mobileOrder.address?.addr1}<br />
-                                        {mobileOrder.address?.city}, {mobileOrder.address?.state} — {mobileOrder.address?.pincode}
+                                        {mobileOrder.address?.city}, {mobileOrder.address?.state} — {mobileOrder.address?.pinCode}
                                     </span>
                                 </div>
                                 <hr />

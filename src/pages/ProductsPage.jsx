@@ -114,6 +114,7 @@ export default function ProductsPage() {
         } else {
             localCart.push({
                 key: product.key,
+                productId: product.productId,
                 title: product.title,
                 count: countToAdd,
                 price: product.price,

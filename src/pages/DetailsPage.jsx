@@ -102,10 +102,10 @@ export default function DetailsPage() {
         setAddress({ ...address, [e.target.name]: e.target.value });
     };
     const handleAddressBlur = () => {
-        saveChanges({ address });
+        saveChanges({ address: { ...address } });
     };
 
-    if (loading) return null;
+    if (loading) return <div style={{ color: '#fff', textAlign: 'center' }}>Loading...</div>;
 
     if (!user) {
         return (

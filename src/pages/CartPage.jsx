@@ -1,3 +1,4 @@
+// CartPage.jsx (updated)
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -14,7 +15,6 @@ import {
 import { useNavigate } from "react-router-dom";
 import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
-//imports
 import "./styles/cartPage.css";
 import OtpPopup from "../Common/OtpPopup";
 import http from "../api/http";
@@ -32,14 +32,13 @@ const Info = [
 
 const formatNumber = n => Number(n).toLocaleString('en-IN');
 
-// ---------- Validation helpers (pure) ----------
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const NAME_RX = /^[a-zA-Z][a-zA-Z\s'.-]{2,49}$/;               // min 3
-const CITY_RX = /^[A-Za-z][A-Za-z\s.-]{2,}$/;                   // min 3
-const PIN_RX = /^[1-9][0-9]{5}$/;                               // 6 digits India
-const PHONE_RX = /^[6-9]\d{9}$/;                                // 10-digit India
+const NAME_RX = /^[a-zA-Z][a-zA-Z\s'.-]{2,49}$/;
+const CITY_RX = /^[A-Za-z][A-Za-z\s.-]{2,}$/;
+const PIN_RX = /^[1-9][0-9]{5}$/;
+const PHONE_RX = /^[6-9]\d{9}$/;
 
-const addressRequiredKeys = ["fullName", "emailId", "phoneNumber", "state", "city", "pincode", "addr1"];
+const addressRequiredKeys = ["fullName", "emailId", "phoneNumber", "state", "city", "pinCode", "addr1"];
 
 function validateValue(name, value) {
     const val = String(value ?? "").trim();
@@ -61,8 +60,8 @@ function validateValue(name, value) {
         case "city":
             if (!CITY_RX.test(val)) return "Enter valid city";
             return "";
-        case "pincode":
-            if (!PIN_RX.test(val)) return "Enter valid 6-digit pincode";
+        case "pinCode":
+            if (!PIN_RX.test(val)) return "Enter valid 6-digit pinCode";
             return "";
         case "addr1":
             if (val.length < 10) return "Address must be at least 10 characters";
@@ -73,13 +72,11 @@ function validateValue(name, value) {
 }
 
 function allAddressValid(address, currentErrors = {}) {
-    // Pure check for guarding UI; does not mutate state
     const fieldErrors = addressRequiredKeys.map(k => validateValue(k, address[k]));
     const anyNewErrors = fieldErrors.some(msg => !!msg);
     const anyExisting = Object.values(currentErrors).some(Boolean);
     return { ok: !anyNewErrors && !anyExisting, fieldErrorsByKey: Object.fromEntries(addressRequiredKeys.map((k, i) => [k, fieldErrors[i]])) };
 }
-// ------------------------------------------------
 
 const CartItem = ({ item, onQtyChange, onRemove }) => {
     const key = item.key ?? item.id;
@@ -122,7 +119,7 @@ export default function CartPage() {
         phoneNumber: "",
         state: "",
         city: "",
-        pincode: "",
+        pinCode: "",
         addr1: ""
     });
     const [states, setStates] = useState([]);
@@ -132,7 +129,6 @@ export default function CartPage() {
     const [paymentMethod, setPaymentMethod] = useState("");
     const [showCheckout, setShowCheckout] = useState(false);
     const [openOtp, setOpenOtp] = useState(false);
-    const [openConfirmOtp, setOpenConfirmOtp] = useState(false);
     const [couponCode, setCouponCode] = useState("");
     const [isPlacingOrder, setIsPlacingOrder] = useState(false);
     const [orderConfirmed, setOrderConfirmed] = useState(false);
@@ -144,7 +140,7 @@ export default function CartPage() {
         phoneNumber: useRef(null),
         state: useRef(null),
         city: useRef(null),
-        pincode: useRef(null),
+        pinCode: useRef(null),
         addr1: useRef(null),
     };
 
@@ -163,10 +159,9 @@ export default function CartPage() {
                 phoneNumber: user.phoneNumber || "",
                 state: user.address?.state || "",
                 city: user.address?.city || "",
-                pincode: user.address?.pinCode || "",
+                pinCode: user.address?.pinCode || "",
                 addr1: user.address?.addr1 || ""
             }));
-            // ✅ auto-load cities when editing saved address
             if (user.address?.state) {
                 const st = State.getStatesOfCountry("IN").find(s => s.name === user.address.state);
                 if (st) setCities(City.getCitiesOfState("IN", st.isoCode));
@@ -178,7 +173,8 @@ export default function CartPage() {
         const localCart = JSON.parse(localStorage.getItem("cart") || "[]");
         setProducts(localCart);
         if (user?._id && localCart.length) {
-            http.post(`/api/users/${user._id}/cart/save`, { cart: localCart }).catch(console.error);
+            // <-- changed: session-based cart save endpoint (no userId in URL)
+            http.post(`/api/users/cart/save`, { cart: localCart }).catch(console.error);
         }
     }, [user]);
 
@@ -202,12 +198,14 @@ export default function CartPage() {
     const handleCheckout = async () => {
         if (!products.length) return alert("Your cart is empty.");
         if (user?._id) {
-            await http.post(`/api/users/${user._id}/cart/save`, { cart: products }).catch(console.error);
+            // session-based save
+            await http.post(`/api/users/cart/save`, { cart: products }).catch(console.error);
             setShowCheckout(true);
-        } else setOpenOtp(true);
+        } else {
+            setOpenOtp(true);
+        }
     };
 
-    // stateful validation on change/blur
     const validateField = (name, value) => {
         const msg = validateValue(name, value);
         setErrors(prev => (prev[name] === msg ? prev : { ...prev, [name]: msg }));
@@ -232,7 +230,6 @@ export default function CartPage() {
     };
 
     const handleChange = (name, value) => {
-        // state -> load cities
         if (name === "state") {
             const st = states.find(s => s.name === value);
             setCities(st ? City.getCitiesOfState("IN", st.isoCode) : []);
@@ -251,9 +248,15 @@ export default function CartPage() {
 
     const startPayment = async () => {
         try {
+            if (!user?._id) {
+                // ensure session: should not happen (OTP flow sets session), but guard
+                alert("Please login or verify OTP before placing the order.");
+                setOpenOtp(true);
+                return;
+            }
             setIsPlacingOrder(true);
-            const { data } = await http.post("/api/payment/order", {
-                emailId: user?.emailId || address.emailId,
+            // <-- removed emailId from payload: server uses session
+            const { data } = await http.post("/api/payment/neworder", {
                 items: products,
                 total,
                 shipping,
@@ -278,33 +281,32 @@ export default function CartPage() {
             description: "Payment for SHINRA",
             handler: async (response) => {
                 try {
+                    // <-- removed emailId: server identifies user via session cookie
                     await http.post("/api/payment/verify", {
                         ...response,
                         orderId,
-                        emailId: user?.emailId || address.emailId,
                     });
                     await http.post(`/api/payment/${orderId}/confirm`);
                     localStorage.removeItem("cart");
                     setProducts([]);
-                    const ev = new CustomEvent("cart-updated", { detail: { count: 0 } });
-                    window.dispatchEvent(ev);
+                    window.dispatchEvent(new CustomEvent("cart-updated", { detail: { count: 0 } }));
                     setOrderConfirmed(true);
                     setTimeout(() => navigate("/dashboard/orders"), 2000);
                 } catch (err) {
+                    console.error("Payment complete handler error:", err);
                     localStorage.removeItem("cart");
                     setProducts([]);
-                    const ev = new CustomEvent("cart-updated", { detail: { count: 0 } });
-                    window.dispatchEvent(ev);
+                    window.dispatchEvent(new CustomEvent("cart-updated", { detail: { count: 0 } }));
                     setOrderConfirmed(true);
                     setTimeout(() => navigate("/dashboard/orders"), 2500);
                 }
             },
             modal: {
                 ondismiss: () => {
+                    // keep UX same (clean cart on dismiss as original)
                     localStorage.removeItem("cart");
                     setProducts([]);
-                    const ev = new CustomEvent("cart-updated", { detail: { count: 0 } });
-                    window.dispatchEvent(ev);
+                    window.dispatchEvent(new CustomEvent("cart-updated", { detail: { count: 0 } }));
                     setOrderConfirmed(true);
                     setTimeout(() => navigate("/dashboard/orders"), 2500);
                 },
@@ -315,7 +317,6 @@ export default function CartPage() {
         rzp.open();
     };
 
-    // Pure overall validity (for UI guard & border)
     const { ok: addressAllOk } = allAddressValid(address, errors);
     const hasAddressErrors = !addressAllOk;
 
@@ -361,7 +362,6 @@ export default function CartPage() {
                                 ))}
                             </div>
 
-                            {/* ORDER SUMMARY STEP 1 */}
                             {!!products.length && (
                                 <div className="order-summary sticky-summary">
                                     <h3>Order Summary</h3>
@@ -391,7 +391,6 @@ export default function CartPage() {
                     {showCheckout && (
                         <div className="checkout-two-col">
                             <div className="checkout-left">
-                                {/* Accordion: Items */}
                                 <Accordion expanded={expanded === "items"} onChange={(_, e) => setExpanded(e ? "items" : false)}>
                                     <AccordionSummary expandIcon={expanded === "items" ? <SaveIcon /> : <EditIcon />} onClick={() => setExpanded(expanded === "items" ? false : "items")}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -422,7 +421,6 @@ export default function CartPage() {
                                     </AccordionDetails>
                                 </Accordion>
 
-                                {/* Accordion: Address */}
                                 <Accordion
                                     expanded={expanded === "address"}
                                     sx={{
@@ -459,14 +457,14 @@ export default function CartPage() {
                                                     gap: 2
                                                 }}
                                             >
-                                                {["fullName", "emailId", "phoneNumber", "state", "city", "pincode", "addr1"].map((field) => {
+                                                {["fullName", "emailId", "phoneNumber", "state", "city", "pinCode", "addr1"].map((field) => {
                                                     const label = {
                                                         fullName: "Full Name",
                                                         emailId: "Email",
                                                         phoneNumber: "Phone Number",
                                                         state: "State",
                                                         city: "City",
-                                                        pincode: "Pincode",
+                                                        pinCode: "PinCode",
                                                         addr1: "Address Line 1"
                                                     }[field];
                                                     const isSelect = field === "state" || field === "city";
@@ -478,7 +476,7 @@ export default function CartPage() {
                                                             label={label}
                                                             inputRef={fieldRefs[field]}
                                                             value={address[field]}
-                                                            disabled={field === "emailId"} // lock email
+                                                            disabled={field === "emailId"}
                                                             onChange={(e) => handleChange(field, e.target.value)}
                                                             select={isSelect}
                                                             SelectProps={isSelect ? { native: true } : undefined}
@@ -517,7 +515,6 @@ export default function CartPage() {
                                     </AccordionDetails>
                                 </Accordion>
 
-                                {/* Accordion: Payment */}
                                 <Accordion expanded={expanded === "payment"} disabled={!addressAllOk} onChange={(_, e) => setExpanded(e ? "payment" : false)}>
                                     <AccordionSummary expandIcon={expanded === "payment" ? <SaveIcon /> : <EditIcon />} onClick={() => setExpanded(expanded === "payment" ? false : "payment")}>
                                         <div style={{ display: 'flex', alignItems: 'center' }}>
@@ -547,7 +544,6 @@ export default function CartPage() {
                                 </Accordion>
                             </div>
 
-                            {/* ORDER SUMMARY STEP 2 */}
                             {!!products.length && (
                                 <div className="checkout-summary sticky-summary">
                                     <h3>Order Summary</h3>
@@ -563,27 +559,12 @@ export default function CartPage() {
                                     </div>
                                     {address.fullName && (
                                         <div className="address-preview">
-                                            {address.fullName && <div className="address-preview-row">
-                                                <span className="address-preview-label">👤 Name:</span>
-                                                <span className="address-preview-value">{address.fullName}</span>
-                                            </div>}
-                                            <div className="address-preview-row">
-                                                <span className="address-preview-label">📞 Phone:</span>
-                                                <span className="address-preview-value">{address.phoneNumber}</span>
-                                            </div>
-                                            {address.emailId && <div className="address-preview-row">
-                                                <span className="address-preview-label">✉️ Email:</span>
-                                                <span className="address-preview-value">{address.emailId}</span>
-                                            </div>}
-                                            {address.addr1 && <div className="address-preview-row">
-                                                <span className="address-preview-label">🏠 Address:</span>
-                                                <span className="address-preview-value">
-                                                    {address.addr1}
-                                                </span>
-                                            </div>}
+                                            {address.fullName && <div className="address-preview-row"><span className="address-preview-label">👤 Name:</span><span className="address-preview-value">{address.fullName}</span></div>}
+                                            <div className="address-preview-row"><span className="address-preview-label">📞 Phone:</span><span className="address-preview-value">{address.phoneNumber}</span></div>
+                                            {address.emailId && <div className="address-preview-row"><span className="address-preview-label">✉️ Email:</span><span className="address-preview-value">{address.emailId}</span></div>}
+                                            {address.addr1 && <div className="address-preview-row"><span className="address-preview-label">🏠 Address:</span><span className="address-preview-value">{address.addr1}</span></div>}
                                             <hr />
                                         </div>
-
                                     )}
                                     {paymentMethod && (
                                         <div className="address-preview">
