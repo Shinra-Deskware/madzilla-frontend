@@ -6,18 +6,24 @@ import {
     Tab,
     Typography,
     Fade,
-    IconButton,
     useMediaQuery,
     CircularProgress
 } from "@mui/material";
-
+import {
+    Payment,
+    GppGood,
+    Autorenew,
+    Replay,
+    LocalShipping,
+    SupportAgent,
+    FactCheck,
+    BuildCircle,
+    DoNotDisturbAlt
+} from "@mui/icons-material";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import StarIcon from "@mui/icons-material/Star";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
-import PaymentIcon from "@mui/icons-material/Payment";
-import GppGoodIcon from "@mui/icons-material/GppGood";
-import AutorenewIcon from "@mui/icons-material/Autorenew";
 import ShareIcon from "@mui/icons-material/Share";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import CancelIcon from "@mui/icons-material/Cancel";
@@ -27,20 +33,49 @@ import SpeedDialAction from "@mui/material/SpeedDialAction";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import FacebookIcon from "@mui/icons-material/Facebook";
 import InstagramIcon from "@mui/icons-material/Instagram";
-import TwitterIcon from "@mui/icons-material/Twitter";
 import ContentCopyIcon from "@mui/icons-material/ContentCopy";
+import WarningAmber from "@mui/icons-material/WarningAmber";
+import PowerOff from "@mui/icons-material/PowerOff";
+import Build from "@mui/icons-material/Build";
+import WaterDrop from "@mui/icons-material/WaterDrop";
+import Cable from "@mui/icons-material/Cable";
+import BluetoothDisabled from "@mui/icons-material/BluetoothDisabled";
+import SystemSecurityUpdateWarning from "@mui/icons-material/SystemSecurityUpdateWarning";
+import CleanHands from "@mui/icons-material/CleanHands";
+import DeleteForever from "@mui/icons-material/DeleteForever";
+import FireExtinguisher from "@mui/icons-material/FireExtinguisher";
 
 import "./Styles/productsSection.css";
 import { useNavigate } from "react-router-dom";
-import http from "../api/http";
+import { productsData, services, warnings, warrantyClaim } from "../Constants/Data";
 
 export default function ProductsSection() {
     const navigate = useNavigate();
     const sliderRef = useRef(null);
     const isMobile = useMediaQuery("(max-width:768px)");
-
+    const icons = {
+        Payment,
+        GppGood,
+        Autorenew,
+        Replay,
+        LocalShipping,
+        SupportAgent,
+        FactCheck,
+        BuildCircle,
+        DoNotDisturbAlt,
+        WarningAmber,
+        PowerOff,
+        Build,
+        WaterDrop,
+        Cable,
+        BluetoothDisabled,
+        SystemSecurityUpdateWarning,
+        CleanHands,
+        DeleteForever,
+        FireExtinguisher
+    };
     // ✅ STATE
-    const [products, setProducts] = useState([]);
+    const [products, setProducts] = useState(productsData);
     const [loading, setLoading] = useState(true);
     const [activeIndex, setActiveIndex] = useState(0);
     const [currentProductIndex, setCurrentProductIndex] = useState(0);
@@ -50,18 +85,10 @@ export default function ProductsSection() {
 
     // ✅ Fetch products (instead of sampleProductsData)
     useEffect(() => {
-        const load = async () => {
-            try {
-                const res = await http.get("/api/sections/products");
-                setProducts(res.data || []);
-                setActiveImages(res.data.map(() => 0));
-                setSelectedImage(res.data[0]?.images?.[0] || null);
-            } catch {
-                setProducts([]);
-            }
-            setLoading(false);
-        };
-        load();
+        setProducts(productsData)
+        setActiveImages(productsData.map(() => 0));
+        setSelectedImage(productsData[0]?.images?.[0] || null);
+        setLoading(false);
     }, []);
 
     // ✅ Scroll highlight for mobile
@@ -111,12 +138,6 @@ export default function ProductsSection() {
         const next = (currentProductIndex + 1) % products.length;
         setCurrentProductIndex(next);
         setSelectedImage(products[next].images[0]);
-    };
-
-    const serviceIcons = {
-        "UPI / Debit / Credit Cards Accepted": <PaymentIcon className="service-icon payment-icon" />,
-        "2 Year Warranty": <GppGoodIcon className="service-icon warranty-icon" />,
-        "7 Days Replacement": <AutorenewIcon className="service-icon replacement-icon" />
     };
 
     const currentProduct = products[currentProductIndex];
@@ -274,7 +295,7 @@ export default function ProductsSection() {
 
                     {/* Right Section */}
                     <Box className="products-right-section">
-                        <div>
+                        <div className="child">
                             <Box className="title-row">
                                 <Typography variant="h4" className="product-title">
                                     {currentProduct.title}
@@ -287,7 +308,6 @@ export default function ProductsSection() {
                                         </Typography>
                                         <VerifiedIcon className="assured-icon" />
                                     </Box>
-
                                     <SpeedDial
                                         ariaLabel="Share Product"
                                         icon={<ShareIcon style={{ color: "#fff", fontSize: "20px" }} />}
@@ -307,16 +327,13 @@ export default function ProductsSection() {
                                             }
                                         }}
                                     >
-                                        {/* Copy */}
+                                        {/* Copy Link */}
                                         <SpeedDialAction
                                             icon={<ContentCopyIcon style={{ fontSize: 18, color: "#fff" }} />}
                                             tooltipTitle="Copy Link"
                                             tooltipPlacement="top"
                                             sx={{ background: "#111", width: 32, height: 32 }}
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(window.location.href);
-                                                alert("Link copied!");
-                                            }}
+                                            onClick={() => navigator.clipboard.writeText("https://www.shinra-deskware.com/dashboard/products")}
                                         />
 
                                         {/* WhatsApp */}
@@ -327,7 +344,7 @@ export default function ProductsSection() {
                                             sx={{ background: "#111", width: 32, height: 32 }}
                                             onClick={() =>
                                                 window.open(
-                                                    `https://wa.me/?text=${encodeURIComponent(window.location.href)}`,
+                                                    `https://wa.me/919346407877?text=${encodeURIComponent("Hi, I’m interested in Madzilla Deskware")}`,
                                                     "_blank"
                                                 )
                                             }
@@ -339,23 +356,8 @@ export default function ProductsSection() {
                                             tooltipTitle="Instagram"
                                             tooltipPlacement="top"
                                             sx={{ background: "#111", width: 32, height: 32 }}
-                                            onClick={() => {
-                                                navigator.clipboard.writeText(window.location.href);
-                                                alert("Link copied (Instagram web doesn’t support direct share)");
-                                            }}
-                                        />
-
-                                        {/* Twitter */}
-                                        <SpeedDialAction
-                                            icon={<TwitterIcon style={{ fontSize: 18, color: "#1DA1F2" }} />}
-                                            tooltipTitle="Twitter"
-                                            tooltipPlacement="top"
-                                            sx={{ background: "#111", width: 32, height: 32 }}
                                             onClick={() =>
-                                                window.open(
-                                                    `https://twitter.com/intent/tweet?url=${encodeURIComponent(window.location.href)}`,
-                                                    "_blank"
-                                                )
+                                                window.open("https://www.instagram.com/shinra_deskwares/", "_blank")
                                             }
                                         />
 
@@ -366,13 +368,11 @@ export default function ProductsSection() {
                                             tooltipPlacement="top"
                                             sx={{ background: "#111", width: 32, height: 32 }}
                                             onClick={() =>
-                                                window.open(
-                                                    `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(window.location.href)}`,
-                                                    "_blank"
-                                                )
+                                                window.open("https://www.facebook.com/profile.php?id=61583097886891", "_blank")
                                             }
                                         />
                                     </SpeedDial>
+
                                 </Box>
                             </Box>
 
@@ -422,49 +422,82 @@ export default function ProductsSection() {
                                 indicatorColor="secondary"
                                 className="tabs"
                             >
-                                <Tab label="Info" />
+                                <Tab label="About" />
                                 <Tab label="Warranty" />
+                                <Tab label="Services" />
+                                <Tab label="Precautions" />
                             </Tabs>
 
                             <Box>
-                                <Fade in={tabValue === 0} timeout={500} unmountOnExit>
+                                {tabValue === 0 && <Fade in={true} timeout={500} unmountOnExit>
                                     <Box className="info-text-box">
                                         <div className="info-text">{currentProduct.description}</div>
                                         <Box className="info-grid">
                                             <Box className="info-column">
-                                                <Typography className="section-title">Highlights</Typography>
                                                 {currentProduct.features.map((feature, i) => {
                                                     const IconComponent = Icons[feature.icon];
                                                     return (
                                                         <div className="feature-line" key={i}>
-                                                            <IconComponent />
+                                                            <IconComponent color={feature.color} fontSize="medium" />
                                                             {feature.text}
                                                         </div>
                                                     );
                                                 })}
                                             </Box>
-                                            <Box className="info-column">
-                                                <Typography className="section-title">Services</Typography>
-                                                {currentProduct.services.map((s, i) => (
-                                                    <div className="service-line" key={`service-${i}`}>
-                                                        {serviceIcons[s]}
-                                                        <span className="service-text">{s}</span>
-                                                    </div>
-                                                ))}
-                                            </Box>
                                         </Box>
                                     </Box>
-                                </Fade>
+                                </Fade>}
 
-                                <Fade in={tabValue === 1} timeout={500} unmountOnExit>
+                                {tabValue === 1 && <Fade in={true} timeout={500} unmountOnExit>
                                     <Typography className="tab-content">
-                                        {currentProduct.warrantyDetails || currentProduct.warranty}
+                                        <Box className="info-column">
+                                            {warrantyClaim.map((item, index) => {
+                                                const IconComponent = icons[item.icon];
+                                                return (
+                                                    <Box key={index} className="feature-line" display="flex" alignItems="center" gap={1}>
+                                                        <IconComponent color={item.color} fontSize="medium" />
+                                                        <Typography variant="body2">{item.text}</Typography>
+                                                    </Box>
+                                                );
+                                            })}
+                                        </Box>
                                     </Typography>
-                                </Fade>
+                                </Fade>}
+
+                                {tabValue === 2 && <Fade in={true} timeout={500} unmountOnExit>
+                                    <Typography className="tab-content">
+                                        <Box className="info-column">
+                                            {services.map((service, index) => {
+                                                const IconComponent = icons[service.icon];
+                                                return (
+                                                    <Box key={index} className="feature-line" display="flex" alignItems="center" gap={1}>
+                                                        <IconComponent color={service.color} fontSize="medium" />
+                                                        <Typography variant="body2">{service.text}</Typography>
+                                                    </Box>
+                                                );
+                                            })}
+                                        </Box>
+                                    </Typography>
+                                </Fade>}
+                                {tabValue === 3 && <Fade in={true} timeout={500} unmountOnExit>
+                                    <Typography className="tab-content">
+                                        <Box className="info-column">
+                                            {warnings.map((service, index) => {
+                                                const IconComponent = icons[service.icon];
+                                                return (
+                                                    <Box key={index} className="feature-line" display="flex" alignItems="center" gap={1}>
+                                                        <IconComponent color={service.color} fontSize="medium" />
+                                                        <Typography variant="body2">{service.text}</Typography>
+                                                    </Box>
+                                                );
+                                            })}
+                                        </Box>
+                                    </Typography>
+                                </Fade>}
                             </Box>
                         </div>
 
-                        <Box className="side-arrow" onClick={goNext}>
+                        <Box className="side-arrow margin-left-side-arrow" onClick={goNext}>
                             <div className="arrow-button">›</div>
                         </Box>
                     </Box>

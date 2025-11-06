@@ -1,4 +1,4 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, useMediaQuery } from "@mui/material";
 import {
     Facebook,
     Instagram,
@@ -9,13 +9,16 @@ import {
     Email,
     Home,
     Engineering,
-    EmojiPeople, 
-    PermContactCalendar
+    EmojiPeople,
+    PermContactCalendar,
+    WhatsApp
 } from "@mui/icons-material";
 
 import "./Styles/contactSection.css";
+import PolicyBottomSheet from "../components/PolicyBottomSheet";
 
 export default function ContactSection() {
+    const isMobile = useMediaQuery("(max-width:768px)");
     return (
         <Box className="footer-section">
             <Box className="footer-container">
@@ -39,18 +42,40 @@ export default function ContactSection() {
                 <Box className="footer-middle-row">
 
                     {/* Store */}
-                    <Box className="footer-column">
+                    {!isMobile && <Box className="footer-column">
                         <Typography variant="h6" className="footer-title">Store</Typography>
                         <Box className="footer-contact"><Home className="footer-icon" />Home</Box>
-                        <Box className="footer-contact"><EmojiPeople className="footer-icon" />About</Box>
-                        <Box className="footer-contact"><Engineering className="footer-icon" />Service</Box>
-                        <Box className="footer-contact"><PermContactCalendar className="footer-icon" />Contact</Box>
-                    </Box>
+                        <Box className="footer-contact"><EmojiPeople className="footer-icon" />Products</Box>
+                        <Box className="footer-contact"><Engineering className="footer-icon" />Contact</Box>
+                        <Box className="footer-contact"><PermContactCalendar className="footer-icon" />About Us</Box>
+                    </Box>}
+                    <Box className="footer-column">
+                        <Typography variant="h6" className="footer-title">Quick Links</Typography>
 
+                        <Box className="footer-contact">
+                            <Home className="footer-icon" />
+                            <PolicyBottomSheet type="return" label="Return & Refund Policy" />
+                        </Box>
+
+                        <Box className="footer-contact">
+                            <EmojiPeople className="footer-icon" />
+                            <PolicyBottomSheet type="privacy" label="Privacy Policy" />
+                        </Box>
+
+                        <Box className="footer-contact">
+                            <Engineering className="footer-icon" />
+                            <PolicyBottomSheet type="terms" label="Terms Of Service" />
+                        </Box>
+
+                        <Box className="footer-contact">
+                            <PermContactCalendar className="footer-icon" />
+                            <PolicyBottomSheet type="shipping" label="Shipping Policy" />
+                        </Box>
+                    </Box>
                     {/* Social */}
                     <Box className="footer-column">
                         <Typography variant="h6" className="footer-title">Social</Typography>
-                        <Box className="footer-contact"><Twitter className="footer-icon" />Twitter</Box>
+                        <Box className="footer-contact"><WhatsApp className="footer-icon" />Whatsapp</Box>
                         <Box className="footer-contact"><Instagram className="footer-icon" />Instagram</Box>
                         <Box className="footer-contact"><YouTube className="footer-icon" />YouTube</Box>
                         <Box className="footer-contact"><Facebook className="footer-icon" />Facebook</Box>

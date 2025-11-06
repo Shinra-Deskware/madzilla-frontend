@@ -9,7 +9,7 @@
     font-size: 3rem !important;
     text-align: center !important;
     font-weight: 800 !important;
-    margin-bottom: 3rem !important;
+    margin-bottom: 1rem !important;
     letter-spacing: 1px !important;
 }
 
@@ -18,6 +18,7 @@
     display: flex;
     width: 90%;
     height: 90%;
+    height: 60vh;
     align-items: center;
     justify-content: center;
     position: relative;
@@ -25,11 +26,20 @@
 
 .products-right-section {
     width: 60%;
+    height: 100%;
     justify-content: center;
     color: white;
     min-height: 500px;
     display: flex;
     flex-direction: row;
+}
+
+.products-right-section .child {
+    width: 100%;
+}
+
+.margin-left-side-arrow {
+    margin-left: 3% !important;
 }
 
 .left-side-shop-now {
@@ -40,6 +50,7 @@
 
 .section-left-section {
     width: 40%;
+    height: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -251,6 +262,7 @@
 }
 
 .product-section-mobile-title {
+    margin-top: 5rem !important;
     font-size: 2rem !important;
     margin-bottom: 1rem !important;
 }

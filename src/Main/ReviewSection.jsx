@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "./Styles/reviewSection.css";
 import http from "../api/http";
+import { faqs } from "../Constants/Data";
 
 export default function ReviewSection() {
     const [faqData, setfaqData] = useState([]);
@@ -8,14 +9,7 @@ export default function ReviewSection() {
     const [openIndex, setOpenIndex] = useState(null);
     const toggleFAQ = (index) => setOpenIndex(openIndex === index ? null : index);
     useEffect(() => {
-        const load = async () => {
-            try {
-                const res = await http.get("/api/sections/faqs");
-                setfaqData(res.data || []);
-            } catch {
-                setfaqData([]);
-            }
-        };
+        setfaqData(faqs);
         const loadReviews = async () => {
             try {
                 const res = await http.get("/api/sections/reviews");
@@ -24,7 +18,6 @@ export default function ReviewSection() {
                 setReviewData([]);
             }
         };
-        load();
         loadReviews();
     }, []);
     const renderStars = (r) => {

@@ -55,7 +55,7 @@ export default function HomeSection() {
                         <video
                             ref={mobileVideoRef}
                             src="/assets/Good1.mp4"
-                            loading="lazy" 
+                            loading="lazy"
                             autoPlay
                             muted
                             playsInline
@@ -64,30 +64,49 @@ export default function HomeSection() {
                         />
                     </div>
 
-                    <div className="available-on">
-                        <h3 className="available-title">SOON ON...</h3>
-                        <div className="store-links">
-                            <a
-                                href="https://www.amazon.in"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                style={{ marginTop: "10px" }}
-                            >
-                                <img src="/assets/amazon.png" loading="lazy" alt="Amazon" />
-                            </a>
-                            <a href="https://www.flipkart.com" loading="lazy" target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/flipkart.png" alt="Flipkart" />
-                            </a>
-                            <a href="https://www.meesho.com" loading="lazy" target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/messho.png" alt="Meesho" />
-                            </a>
+                    <div className="hero-second-content">
+                        <div className="available-on">
+                            <p className="available-title">Verified on leading platforms</p>
+                            <div className="store-links product-links">
+                                <a href="https://www.amazon.in" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/meta.png" alt="Amazon" />
+                                </a>
+                                <a href="https://www.flipkart.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/msme.png" alt="Flipkart" />
+                                </a>
+                                <a href="https://www.meesho.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/googlebusiness.png" alt="Meesho" />
+                                </a>
+                                <a href="https://www.ebay.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/whatsapp.png" alt="eBay" />
+                                </a>
+                            </div>
                         </div>
+                        {/* <div className="available-on">
+                            <h3 className="available-title">SOON ON...</h3>
+                            <div className="store-links">
+                                <a
+                                    href="https://www.amazon.in"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ marginTop: "10px" }}
+                                >
+                                    <img src="/assets/amazon.png" loading="lazy" alt="Amazon" />
+                                </a>
+                                <a href="https://www.flipkart.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/flipkart.png" alt="Flipkart" />
+                                </a>
+                                <a href="https://www.meesho.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/messho.png" alt="Meesho" />
+                                </a>
+                            </div>
+                        </div> */}
                     </div>
                 </>
             ) : (
                 <>
                     {/* 🖥 Desktop layout */}
-                    <div className="hero-sub-content">
+                    <div className="hero-first-content">
                         <div className="hero-text-desktop">
                             <h1 className="hero-title">MADZILLA</h1>
                             <p className="hero-description">
@@ -96,7 +115,6 @@ export default function HomeSection() {
                                 Built for collectors, gamers, and design lovers alike.
                             </p>
                         </div>
-
                         <div
                             className="hero-video-container"
                             onMouseEnter={handleDesktopMouseEnter}
@@ -107,7 +125,7 @@ export default function HomeSection() {
                                 src="/assets/Good1.mp4"
                                 autoPlay
                                 muted
-                                loading="lazy" 
+                                loading="lazy"
                                 playsInline
                                 className="hero-video"
                                 onEnded={handleDesktopVideoEnd}
@@ -115,21 +133,40 @@ export default function HomeSection() {
                         </div>
                     </div>
 
-                    <div className="available-on">
-                        <h3 className="available-title">SOON ON...</h3>
-                        <div className="store-links">
-                            <a href="https://www.amazon.in" loading="lazy" target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/amazon.png" alt="Amazon" />
-                            </a>
-                            <a href="https://www.flipkart.com"loading="lazy"  target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/flipkart.png" alt="Flipkart" />
-                            </a>
-                            <a href="https://www.meesho.com"loading="lazy"  target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/messho.png" alt="Meesho" />
-                            </a>
-                            <a href="https://www.ebay.com" loading="lazy" target="_blank" rel="noopener noreferrer">
-                                <img src="/assets/ebay.png" alt="eBay" />
-                            </a>
+                    <div className="hero-second-content desktop-second-content">
+                        <div className="available-on">
+                            <h3 className="available-title">VERIFIED ALONG LEADING PALTFORMS</h3>
+                            <div className="store-links product-links">
+                                <a href="https://www.amazon.in" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/meta.png" alt="Amazon" />
+                                </a>
+                                <a href="https://www.flipkart.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/msme.png" alt="Flipkart" />
+                                </a>
+                                <a href="https://www.meesho.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/googlebusiness.png" alt="Meesho" />
+                                </a>
+                                <a href="https://www.ebay.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/whatsapp.png" alt="eBay" />
+                                </a>
+                            </div>
+                        </div>
+                        <div className="available-on">
+                            <h3 className="available-title">SOON ON...</h3>
+                            <div className="store-links">
+                                <a href="https://www.amazon.in" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/amazon.png" alt="Amazon" />
+                                </a>
+                                <a href="https://www.flipkart.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/flipkart.png" alt="Flipkart" />
+                                </a>
+                                <a href="https://www.meesho.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/messho.png" alt="Meesho" />
+                                </a>
+                                <a href="https://www.ebay.com" loading="lazy" target="_blank" rel="noopener noreferrer">
+                                    <img src="/assets/ebay.png" alt="eBay" />
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </>

@@ -33,6 +33,7 @@ import "./styles/productsPage.css";
 import ProductAccordionSection from "../Common/ProductAccordionSection";
 import http from "../api/http";
 import { useUser } from "../context/UserContext"; // ✅ user context
+import { productsData } from "../Constants/Data";
 
 export default function ProductsPage() {
     const { user } = useUser(); // ✅ user._id available
@@ -41,7 +42,6 @@ export default function ProductsPage() {
     const [productIndex, setProductIndex] = useState(0);
     const [selectedImage, setSelectedImage] = useState(0);
     const [tabValue, setTabValue] = useState(0);
-    const [quantity, setQuantity] = useState(1);
     const [cartCounts, setCartCounts] = useState({});
     const [reviewText, setReviewText] = useState("");
     const [rating, setRating] = useState(0);
@@ -58,17 +58,8 @@ export default function ProductsPage() {
 
     // ✅ Fetch products
     useEffect(() => {
-        const fetchProducts = async () => {
-            try {
-                const res = await http.get("/api/sections/products");
-                setProducts(res.data);
-            } catch (err) {
-                console.error("Error fetching products:", err);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
+        setProducts(productsData);
+        setLoading(false);
     }, []);
     // ✅ Always reload local cart from storage (latest version)
     useEffect(() => {
@@ -182,17 +173,10 @@ export default function ProductsPage() {
         setSelectedImage(0);
     };
 
-    const handleQtyChange = (type) => {
-        setQuantity((prev) =>
-            type === "inc" ? prev + 1 : prev > 1 ? prev - 1 : 1
-        );
-    };
-
     const handleFileChange = (e) => setFiles(Array.from(e.target.files));
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("Review Submitted:", { reviewText, rating, files });
         setReviewText("");
         setRating(0);
         setFiles([]);
@@ -281,7 +265,7 @@ export default function ProductsPage() {
                                             return (
                                                 <div key={i} className="feature-line">
                                                     {IconComponent && (
-                                                        <IconComponent className="feature-dynamic-icon" />
+                                                        <IconComponent color={feature.color} fontSize="medium" />
                                                     )}
                                                     <span>{feature.text}</span>
                                                 </div>

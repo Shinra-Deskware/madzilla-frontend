@@ -1,0 +1,98 @@
+/* /src/Styles/policyPage.css */
+body {
+    color: white !important;
+}
+
+.policy-container {
+    font-family: "Poppins", sans-serif;
+    color: #fff;
+}
+
+.policy-section {
+    margin-top: 1.6rem;
+}
+
+.policy-list {
+    margin: 0.5rem 0 0.5rem 1.5rem;
+    padding: 0;
+}
+
+.policy-list li {
+    margin-bottom: 0.4rem;
+    color: #ffffff;
+    font-size: 0.95rem;
+}
+
+.policy-link {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.policy-link:hover {
+    text-decoration: underline;
+}
+
+/* Footer contact link (keeps style consistent) */
+.footer-contact-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+/* /Styles/policyPage.css */
+
+.policy-container {
+    color: #fff !important;
+    background-color: transparent;
+}
+
+.policy-container a {
+    color: #4da6ff !important;
+    text-decoration: underline;
+}
+
+.policy-container .MuiTypography-root {
+    color: #fff !important;
+}
+
+.policy-container .policy-section {
+    margin-bottom: 1.8rem;
+}
+
+.policy-container .policy-list {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    color: #fff;
+}
+
+.policy-container .policy-link {
+    color: #4da6ff !important;
+    font-weight: 500;
+}
+
+.policy-container strong {
+    color: #ffffff;
+}
+
+.policy-container .MuiDivider-root {
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* /Styles/policyPage.css */
+
+.policy-container a {
+    color: #4da6ff !important;
+    text-decoration: underline;
+}
+
+/* Open all policy links in a new tab */
+.policy-container a[target="_blank"],
+.policy-container a {
+    cursor: pointer;
+}
+
+/* Force all policy links to open in new tab */
+.policy-container a::after {
+    content: "";
+}
