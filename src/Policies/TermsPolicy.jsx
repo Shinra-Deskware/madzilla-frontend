@@ -209,8 +209,8 @@ export function Content() {
                     For questions regarding these Terms of Service, please contact:
                     <br />
                     📧 Email:{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>
                     <br />
                     📍 Address: HMT Swarnapuri Colony, Hyderabad – 500050, India

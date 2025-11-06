@@ -114,8 +114,8 @@ export function Content() {
                 </ul>
                 <Typography variant="body2">
                     To exercise these rights, contact us at{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>
                     .
                 </Typography>
@@ -185,8 +185,8 @@ export function Content() {
                     If you have questions about this Privacy Policy, please contact:
                     <br />
                     📧 Email:{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>
                     <br />
                     📍 Address: HMT Swarnapuri Colony, Hyderabad – 500050, India

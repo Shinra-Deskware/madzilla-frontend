@@ -25,7 +25,7 @@ const PaymentLogos = { Phonepe: 'phonepe', Paytm: 'paytm', Gpay: 'gpay' };
 const DeliveryLogos = { Fast: 'rabbit', Normal: 'tortoise' };
 const Info = [
     { icon: <ShippingIcon />, bg: "#FCE7F3", title: "Free Shipping", subtitle: "For online payments" },
-    { icon: <CallIcon />, bg: "#F3F4F6", title: "Call Us Anytime", subtitle: "+916303666387" },
+    { icon: <CallIcon />, bg: "#F3F4F6", title: "Call Us Anytime", subtitle: "+9193464 07877" },
     { icon: <ChatIcon />, bg: "#DCFCE7", title: "Chat With Us", subtitle: "We offer 24-hour chat support" },
     { icon: <GiftIcon />, bg: "#FEF9C3", title: "Gift Cards", subtitle: "For your loved one, in any amount" },
 ];

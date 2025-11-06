@@ -41,12 +41,12 @@ export function Content() {
                 </Typography>
                 <Typography variant="body2" >
                     Contact our team within 7 days of delivery at{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>{" "}
                     or WhatsApp{" "}
-                    <a href="https://wa.me/916303666387" className="policy-link">
-                        +91 6303666387
+                    <a href="https://wa.me/9193464 07877" className="policy-link">
+                        +91 93464 07877
                     </a>
                     . Provide your order ID, a brief issue description, and photos/videos
                     if applicable. Once approved, we will arrange pickup or share the
@@ -129,8 +129,8 @@ export function Content() {
                 <Typography variant="body2" >
                     If your refund has not appeared after 7 business days, please check
                     with your bank or card provider first. If unresolved, contact us at{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>{" "}
                     for assistance.
                 </Typography>
@@ -175,13 +175,13 @@ export function Content() {
                     For any questions about this Return & Refund Policy, please contact:
                     <br />
                     📧 Email:{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>
                     <br />
                     💬 WhatsApp:{" "}
-                    <a href="https://wa.me/916303666387" className="policy-link">
-                        +91 6303666387
+                    <a href="https://wa.me/9193464 07877" className="policy-link">
+                        +91 93464 07877
                     </a>
                     <br />
                     📍 Address: HMT Swarnapuri Colony, Hyderabad – 500050 (India)

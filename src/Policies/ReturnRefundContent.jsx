@@ -43,14 +43,14 @@ export default function ReturnRefundContent() {
                 <ul className="policy-list">
                     <li>
                         Email:{" "}
-                        <a href="mailto:support@shinrastudios.com" className="policy-link">
-                            support@shinrastudios.com
+                        <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                            support@shinra-deskware.com
                         </a>
                     </li>
                     <li>
                         WhatsApp:{" "}
-                        <a href="https://wa.me/916303666387" className="policy-link">
-                            +91 6303666387
+                        <a href="https://wa.me/9193464 07877" className="policy-link">
+                            +91 93464 07877
                         </a>
                     </li>
                 </ul>
@@ -110,8 +110,8 @@ export default function ReturnRefundContent() {
                     <li>Contact your bank or credit card provider.</li>
                     <li>
                         If still unresolved, contact us at{" "}
-                        <a href="mailto:support@shinrastudios.com" className="policy-link">
-                            support@shinrastudios.com
+                        <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                            support@shinra-deskware.com
                         </a>
                         .
                     </li>
@@ -127,8 +127,8 @@ export default function ReturnRefundContent() {
                     For questions about returns or refunds, reach us anytime:
                 </Typography>
                 <ul className="policy-list">
-                    <li>Email: support@shinrastudios.com</li>
-                    <li>WhatsApp: +91 6303666387</li>
+                    <li>Email: support@shinra-deskware.com</li>
+                    <li>WhatsApp: +91 93464 07877</li>
                     <li>Instagram / Facebook: @MadzillaOfficial</li>
                 </ul>
             </Box>

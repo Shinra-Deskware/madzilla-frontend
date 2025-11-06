@@ -173,7 +173,7 @@ export default function OrdersPage() {
                     companyName: "S H I N R A",
                     companyDescription: "LUXURY DESKWARE",
                     companyEmail: "support@shinra-deskware.com",
-                    companyPhone: "+91 6303666387",
+                    companyPhone: "+91 93464 07877",
                     companyAddress: "Plot 226, HMT Colony, Miyapur, HYD.",
                     customerName: order.address.fullName,
                     customerEmail: order.address.emailId || "N/A",

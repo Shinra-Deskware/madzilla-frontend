@@ -172,13 +172,13 @@ export function Content() {
                     For any questions or concerns about shipping, please contact:
                     <br />
                     📧 Email:{" "}
-                    <a href="mailto:support@shinrastudios.com" className="policy-link">
-                        support@shinrastudios.com
+                    <a href="mailto:support@shinra-deskware.com" className="policy-link">
+                        support@shinra-deskware.com
                     </a>
                     <br />
                     💬 WhatsApp:{" "}
-                    <a href="https://wa.me/916303666387" className="policy-link">
-                        +91 6303666387
+                    <a href="https://wa.me/9193464 07877" className="policy-link">
+                        +91 93464 07877
                     </a>
                     <br />
                     📍 Address: HMT Swarnapuri Colony, Hyderabad – 500050, India
