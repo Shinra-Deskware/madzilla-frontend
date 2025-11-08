@@ -94,7 +94,11 @@ body {
     margin-bottom: -0.5rem;
 }
 
-.product-wrapper {
+.main-text {
+    letter-spacing: 4px !important;
+}
+
+.productsection-wrapper {
     margin-top: 0px !important;
 }
 

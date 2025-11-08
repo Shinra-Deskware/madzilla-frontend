@@ -81,33 +81,99 @@ function allAddressValid(address, currentErrors = {}) {
 const CartItem = ({ item, onQtyChange, onRemove }) => {
     const key = item.key ?? item.id;
     const count = item.count ?? item.qty ?? 1;
+
     return (
-        <div className="cart-item">
-            <div className="left">
-                <img src={`/assets/${key}.png`} alt={key} className="item-image" loading="lazy" />
-            </div>
-            <div className="middle">
-                <h4>{item.title ?? item.name ?? "Product"}</h4>
-                <div className="price-left">
-                    <span className="offer-price">₹{formatNumber(item.price)}</span>
-                    {item.originalPrice && <span className="original-price">₹{formatNumber(item.originalPrice)}</span>}
-                    {item.discount && <span className="offer-pill">{item.discount}% OFF</span>}
+        <>
+            {/* 🖥️ Desktop View */}
+            <div className="cart-item cart-item-desktop">
+                <div className="left">
+                    <img
+                        src={`/assets/${key}.png`}
+                        alt={key}
+                        className="item-image"
+                        loading="lazy"
+                    />
                 </div>
-                <div className="item-icons"><span>🚚 Free Shipping</span></div>
-            </div>
-            <div className="right">
-                <div className="quantity-box">
-                    <IconButton size="small" onClick={() => onQtyChange(key, -1)}><RemoveIcon fontSize="small" /></IconButton>
-                    <span>{count}</span>
-                    <IconButton size="small" onClick={() => onQtyChange(key, 1)}><AddIcon fontSize="small" /></IconButton>
+                <div className="middle">
+                    <h4>{item.title ?? item.name ?? "Product"}</h4>
+                    <div className="price-left">
+                        <span className="offer-price">₹{formatNumber(item.price)}</span>
+                        {item.originalPrice && (
+                            <span className="original-price">
+                                ₹{formatNumber(item.originalPrice)}
+                            </span>
+                        )}
+                        {item.discount && (
+                            <span className="offer-pill">{item.discount}% OFF</span>
+                        )}
+                    </div>
+                    <div className="item-icons">
+                        <span>🚚 Free Shipping</span>
+                    </div>
                 </div>
-                <button className="cart-action remove" onClick={() => onRemove(key)}>
-                    <DeleteIcon fontSize="small" /> Remove
-                </button>
+                <div className="right">
+                    <div className="quantity-box">
+                        <IconButton size="small" onClick={() => onQtyChange(key, -1)}>
+                            <RemoveIcon fontSize="small" />
+                        </IconButton>
+                        <span>{count}</span>
+                        <IconButton size="small" onClick={() => onQtyChange(key, 1)}>
+                            <AddIcon fontSize="small" />
+                        </IconButton>
+                    </div>
+                    <button className="cart-action remove" onClick={() => onRemove(key)}>
+                        <DeleteIcon fontSize="small" /> Remove
+                    </button>
+                </div>
             </div>
-        </div>
+
+            {/* 📱 Mobile View */}
+            <div className="cart-item-mobile">
+                <div className="mobile-top-row">
+                    <img
+                        src={`/assets/${key}.png`}
+                        alt={key}
+                        className="mobile-image"
+                        loading="lazy"
+                    />
+                    <div className="mobile-controls">
+                        <div className="quantity-box">
+                            <IconButton size="small" onClick={() => onQtyChange(key, -1)}>
+                                <RemoveIcon fontSize="small" />
+                            </IconButton>
+                            <span>{count}</span>
+                            <IconButton size="small" onClick={() => onQtyChange(key, 1)}>
+                                <AddIcon fontSize="small" />
+                            </IconButton>
+                        </div>
+                        <button className="cart-action remove" onClick={() => onRemove(key)}>
+                            <DeleteIcon fontSize="small" /> Remove
+                        </button>
+                    </div>
+                </div>
+
+                <div className="mobile-bottom">
+                    <h4 className="item-name">{item.title ?? item.name ?? "Product"}</h4>
+                    <div className="price-left">
+                        <span className="offer-price">₹{formatNumber(item.price)}</span>
+                        {item.originalPrice && (
+                            <span className="original-price">
+                                ₹{formatNumber(item.originalPrice)}
+                            </span>
+                        )}
+                        {item.discount && (
+                            <span className="offer-pill">{item.discount}% OFF</span>
+                        )}
+                    </div>
+                    <div className="item-icons">
+                        <span>🚚 Free Shipping</span>
+                    </div>
+                </div>
+            </div>
+        </>
     );
 };
+
 
 export default function CartPage() {
     const { user } = useUser();

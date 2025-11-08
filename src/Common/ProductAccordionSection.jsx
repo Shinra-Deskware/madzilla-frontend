@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
     Accordion,
     AccordionSummary,
@@ -8,9 +8,32 @@ import {
 } from "@mui/material";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import VerifiedIcon from "@mui/icons-material/Verified";
+import http from "../api/http";
 
 export default function ProductAccordionSection({ product }) {
+    const [reviewData, setReviewData] = useState([]);
+    useEffect(() => {
+        const loadReviews = async () => {
+            try {
+                const res = await http.get("/api/sections/reviews");
+                setReviewData(res.data || []);
+            } catch {
+                setReviewData([]);
+            }
+        };
+        loadReviews();
+    }, []);
+    const renderStars = (r) => {
+        const full = Math.floor(r);
+        const half = r % 1 >= 0.5;
+        return (
+            <>
+                {"★".repeat(full)}
+                {half ? "☆" : ""}
+                {"☆".repeat(5 - full - (half ? 1 : 0))}
+            </>
+        );
+    };
     return (
         <Box className="accordion-section">
             {/* 1. Warranty & Safety */}
@@ -100,27 +123,34 @@ export default function ProductAccordionSection({ product }) {
                     <Typography className="accordion-title">Customer Reviews</Typography>
                 </AccordionSummary>
                 <AccordionDetails>
-                    {product.reviews.map((rev, i) => (
-                        <Box key={i} className="review-card">
-                            <Box className="review-header">
-                                <Typography className="review-user">
-                                    ⭐ {rev.user} ({rev.rating}★)
-                                    <VerifiedIcon
-                                        sx={{ fontSize: "1rem", color: "#00e676", ml: 1 }}
-                                    />
-                                </Typography>
-                            </Box>
-                            <Typography className="review-text">{rev.comment}</Typography>
-                            {rev.images.length > 0 && (
-                                <Box className="review-images">
-                                    {rev.images.map((img, j) => (
-                                        <img key={j}
-                                            src={`/assets/${img}`} alt={img} className="review-img" />
-                                    ))}
-                                </Box>
-                            )}
-                        </Box>
-                    ))}
+                    <div className="review-list">
+                        {reviewData.map((item, index) => (
+                            <div className="review-card" key={index}>
+                                <div className="media-wrapper">
+                                    {item.type === "image" && <img src={`/assets/${item.url}.jpeg`} loading="lazy" alt={`/assets/${item.url}.jpeg`} />}
+                                    {item.type === "video" && (
+                                        <video
+                                            src={`/assets/${item.url}.mp4`}
+                                            alt={item.url}
+                                            controls
+                                            loading="lazy"
+                                            controlsList="nodownload"
+                                            disablePictureInPicture
+                                            className="review-video"
+                                            onContextMenu={(e) => e.preventDefault()}
+                                        />
+                                    )}
+                                </div>
+                                <div className="review-content">
+                                    <div className="review-message">{item.message}</div>
+                                    <div className="review-footer">
+                                        <div className="username">{item.username}</div>
+                                        <div className="rating">{renderStars(item.rating)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
                 </AccordionDetails>
             </Accordion>
         </Box>

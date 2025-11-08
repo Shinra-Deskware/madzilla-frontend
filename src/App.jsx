@@ -12,6 +12,8 @@ import ReturnRefundPolicyPage from "./Policies/ReturnRefundPolicy";
 import PrivacyPolicyPage from "./Policies/PrivacyPolicy";
 import ShippingPolicyPage from "./Policies/ShippingPolicy";
 import TermsPolicyPage from "./Policies/TermsPolicy";
+import ContactPage from "./Policies/ContactPage";
+import AboutUs from "./Policies/AboutUs";
 
 function DashboardLayout({ isMobile }) {
     return (
@@ -47,6 +49,8 @@ export default function App() {
                 <Route path="/dashboard/privacy" element={<PrivacyPolicyPage />} />
                 <Route path="/dashboard/shipping" element={<ShippingPolicyPage />} />
                 <Route path="/dashboard/terms" element={<TermsPolicyPage />} />
+                <Route path="/dashboard/contactus" element={<ContactPage />} />
+                <Route path="/dashboard/aboutus" element={<AboutUs />} />
             </Route>
             <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

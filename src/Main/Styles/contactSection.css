@@ -25,6 +25,8 @@
     align-items: center;
     gap: 8px;
     margin: 6px 0;
+    color: #ffffff;
+    text-decoration: none;
 }
 
 .footer-contact:hover .footer-icon {

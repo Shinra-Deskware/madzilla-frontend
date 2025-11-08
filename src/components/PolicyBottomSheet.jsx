@@ -12,6 +12,9 @@ import ReturnRefundPolicyPage from "../Policies/ReturnRefundPolicy";
 import PrivacyPolicyPage from "../Policies/PrivacyPolicy";
 import ShippingPolicyPage from "../Policies/ShippingPolicy";
 import TermsPolicyPage from "../Policies/TermsPolicy";
+import '../Policies/Styles/policyPage.css'
+import ContactPage from "../Policies/ContactPage";
+import AboutUs from "../Policies/AboutUs";
 
 // Import your 4 policies
 
@@ -34,23 +37,28 @@ export default function PolicyBottomSheet({ type, label }) {
 		if (!isMobile) {
 			// Desktop → navigate to full policy page
 			switch (type) {
+				case "contactus":
+					window.open("/dashboard/contactus", "_blank");
+					break;
+				case "aboutus":
+					window.open("/dashboard/aboutus", "_blank");
+					break;
 				case "return":
-					window.open("/dashboard/returnpolicy", "_blank");
+					window.open("/dashboard/returnrefundpolicy", "_blank");
 					break;
 				case "privacy":
-					window.open("/dashboard/privacypolicy", "_blank");
+					window.open("/dashboard/privacy", "_blank");
 					break;
 				case "shipping":
-					window.open("/dashboard/shippingpolicy", "_blank");
+					window.open("/dashboard/shipping", "_blank");
 					break;
 				case "terms":
-					window.open("/dashboard/termspolicy", "_blank");
+					window.open("/dashboard/terms", "_blank");
 					break;
 				default:
 					break;
 			}
 		} else {
-			// Mobile → open bottom sheet
 			setOpen(true);
 		}
 	};
@@ -60,6 +68,10 @@ export default function PolicyBottomSheet({ type, label }) {
 	// Choose which policy to show
 	const renderPolicy = () => {
 		switch (type) {
+			case "contactus":
+				return <ContactPage />;
+			case "aboutus":
+				return <AboutUs />;
 			case "return":
 				return <ReturnRefundPolicyPage />;
 			case "privacy":

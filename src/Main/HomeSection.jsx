@@ -135,7 +135,7 @@ export default function HomeSection() {
 
                     <div className="hero-second-content desktop-second-content">
                         <div className="available-on">
-                            <h3 className="available-title">VERIFIED ALONG LEADING PALTFORMS</h3>
+                            <h3 className="available-title main-text">VERIFIED ALONG LEADING PALTFORMS</h3>
                             <div className="store-links product-links">
                                 <a href="https://www.amazon.in" loading="lazy" target="_blank" rel="noopener noreferrer">
                                     <img src="/assets/meta.png" alt="Amazon" />

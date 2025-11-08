@@ -242,6 +242,10 @@
     color: #000
 }
 
+.no-orders {
+    margin-top: 3rem;
+}
+
 /* ✅ MOBILE NEW DESIGN */
 @media (max-width:768px) {
     .summary-card {

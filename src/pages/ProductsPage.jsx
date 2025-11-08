@@ -34,9 +34,16 @@ import ProductAccordionSection from "../Common/ProductAccordionSection";
 import http from "../api/http";
 import { useUser } from "../context/UserContext"; // ✅ user context
 import { productsData } from "../Constants/Data";
+import ReviewUploadUI from "../Common/ReviewUploadUI";
+import ReviewUploadModal from "../Common/ReviewUploadUI";
 
 export default function ProductsPage() {
     const { user } = useUser(); // ✅ user._id available
+    const [openReview, setOpenReview] = useState(false);
+
+    const handleOpen = () => setOpenReview(true);
+    const handleClose = () => setOpenReview(false);
+
 
     const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
     const [productIndex, setProductIndex] = useState(0);
@@ -287,6 +294,15 @@ export default function ProductsPage() {
                     </Box>
 
                     <ProductAccordionSection product={product} />
+
+                    <Button variant="contained" onClick={handleOpen}>
+                        Write a Review
+                    </Button>
+                    <ReviewUploadModal
+                        open={openReview}
+                        onClose={handleClose}
+                        mode={isMobile ? "mobile" : "desktop"}
+                    />
                 </div>
                 <footer className="bottom-sheet">
                     <div className="sheet-content">
@@ -580,52 +596,14 @@ export default function ProductsPage() {
 
             <ProductAccordionSection product={product} />
 
-            <Box className="review-form-main">
-                <form className="review-form" onSubmit={handleSubmit}>
-                    <textarea
-                        placeholder="Write your review..."
-                        className="review-textarea"
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        required
-                        rows={3}
-                    />
-                    <label htmlFor="file-upload" className="file-upload-label">
-                        📎
-                        <input
-                            type="file"
-                            id="file-upload"
-                            accept="image/*"
-                            onChange={handleFileChange}
-                            multiple
-                            hidden
-                        />
-                    </label>
-                    <div className="rating-stars">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                            <span
-                                key={star}
-                                onClick={() => setRating(star)}
-                                className={star <= rating ? "star filled" : "star"}
-                            >
-                                ★
-                            </span>
-                        ))}
-                    </div>
-                    <button type="submit" className="submit-btn">
-                        POST
-                    </button>
-                </form>
-                {files.length > 0 && (
-                    <div className="file-list">
-                        {files.map((file, i) => (
-                            <div key={i} className="file-item">
-                                {file.name}
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </Box>
+            <Button variant="contained" onClick={handleOpen} style={{marginBottom: '1rem'}}>
+                Write a Review
+            </Button>
+            <ReviewUploadModal
+                open={openReview}
+                onClose={handleClose}
+                mode={isMobile ? "mobile" : "desktop"}
+            />
         </Box>
     );
 }

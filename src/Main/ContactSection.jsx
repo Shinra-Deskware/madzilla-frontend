@@ -16,9 +16,11 @@ import {
 
 import "./Styles/contactSection.css";
 import PolicyBottomSheet from "../components/PolicyBottomSheet";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ContactSection() {
     const isMobile = useMediaQuery("(max-width:768px)");
+    const navigate = useNavigate();
     return (
         <Box className="footer-section">
             <Box className="footer-container">
@@ -40,10 +42,20 @@ export default function ContactSection() {
                     {/* Store */}
                     {!isMobile && <Box className="footer-column">
                         <Typography variant="h6" className="footer-title">Store</Typography>
-                        <Box className="footer-contact"><Home className="footer-icon" />Home</Box>
-                        <Box className="footer-contact"><EmojiPeople className="footer-icon" />Products</Box>
-                        <Box className="footer-contact"><Engineering className="footer-icon" />Contact</Box>
-                        <Box className="footer-contact"><PermContactCalendar className="footer-icon" />About Us</Box>
+                        <Link to="/" className="footer-contact links">
+                            <Home className="footer-icon" />
+                            Home
+                        </Link>
+                        <Link to="/dashboard/products" className="footer-contact links">
+                            <EmojiPeople className="footer-icon" />
+                            Products
+                        </Link>
+                        <Box className="footer-contact"><Engineering className="footer-icon" />
+                            <PolicyBottomSheet type="contactus" label="Contact Us" />
+                        </Box>
+                        <Box className="footer-contact"><PermContactCalendar className="footer-icon" />
+                            <PolicyBottomSheet type="aboutus" label="About Us" />
+                        </Box>
                     </Box>}
                     <Box className="footer-column">
                         <Typography variant="h6" className="footer-title">Quick Links</Typography>

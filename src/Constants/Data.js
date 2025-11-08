@@ -538,46 +538,45 @@ export const warnings = [
     }
 ]
 
-export const faqs =
-    [
-        {
-            question: "What is the 7 Days Money Refund policy?",
-            answer:
-                "If you're not fully satisfied with your Madzilla purchase, you can request a refund within 7 days of delivery. The product must be in original condition and packaging to qualify for a full refund."
-        },
-        {
-            question: "How can I track my Madzilla order?",
-            answer:
-                "Once your order ships, you'll receive a tracking link via email or WhatsApp. You can also check your order status anytime from your Madzilla account dashboard."
-        },
-        {
-            question: "Is the BanlanX app required for all Madzilla models?",
-            answer:
-                "Only the Bluetooth Edition requires the BanlanX app for wireless lighting control. The Classic and Humidifier editions use built-in buttons for color and animation modes."
-        },
-        {
-            question: "Can I customize the lighting effects?",
-            answer:
-                "Absolutely! You can choose from over 20 color modes, dynamic patterns, and smooth animations. Bluetooth Edition users can also create custom presets through the BanlanX app."
-        },
-        {
-            question: "Does Madzilla come with a warranty?",
-            answer:
-                "Yes, every Madzilla includes a 1-Year Limited Warranty covering manufacturing defects. You can claim support easily via our website or any of our contact platforms."
-        },
-        {
-            question: "What are the power requirements?",
-            answer:
-                "All Madzilla versions run on a 5V USB Type-C power source. Avoid using fast chargers or high-voltage adapters to ensure safe and optimal performance."
-        },
-        {
-            question: "Is the Humidifier Edition safe for daily use?",
-            answer:
-                "Yes, it uses an ultrasonic mist system that’s cool to the touch and energy-efficient. The built-in LED system and humidifier operate independently for flexibility."
-        },
-        {
-            question: "How long does delivery usually take?",
-            answer:
-                "Orders are typically processed within 24–48 hours and delivered within 5–7 business days, depending on your location and availability."
-        }
-    ]
+export const faqs = [
+    {
+        question: "What is the 7-Day Refund policy?",
+        answer:
+            "Refunds are only issued if the product has a genuine defect or functional issue. Requests must be submitted within 7 days of delivery. The item must be unused, undamaged, and returned with complete original packaging for inspection. Refunds are approved only after verification."
+    },
+    {
+        question: "How can I track my Madzilla order?",
+        answer:
+            "After dispatch, a tracking link will be shared via email or WhatsApp. You can also view live updates anytime from your Madzilla account dashboard."
+    },
+    {
+        question: "Is the BanlanX app required for all Madzilla models?",
+        answer:
+            "No. Only the Bluetooth Edition uses the BanlanX app. The Classic and Humidifier editions work through built-in buttons and do not require any app."
+    },
+    {
+        question: "Can I customize the lighting effects?",
+        answer:
+            "Full customization is available only on the Bluetooth Edition through the BanlanX app. For the Classic and Humidifier editions, customization is limited. You can message us with your preferred style, and we will guide you through the available options."
+    },
+    {
+        question: "Does Madzilla come with a warranty?",
+        answer:
+            "Yes. Madzilla includes a 1-Year Limited Warranty that covers manufacturing defects only. Physical damage, water damage, or damage caused by improper power sources is not covered."
+    },
+    {
+        question: "What are the power requirements?",
+        answer:
+            "All models require a standard 5V USB Type-C power source. Fast chargers, high-voltage adapters, and unofficial accessories should not be used, as they may void warranty."
+    },
+    {
+        question: "Is the Humidifier Edition safe for daily use?",
+        answer:
+            "Yes. It uses an ultrasonic mist system that stays cool and energy-efficient. Always use clean water and avoid adding oils or fragrances to maintain performance and safety."
+    },
+    {
+        question: "How long does delivery usually take?",
+        answer:
+            "Orders are processed within 24–48 hours and delivered within 5–7 business days, depending on your location. Delays may occur due to courier or regional conditions."
+    }
+];

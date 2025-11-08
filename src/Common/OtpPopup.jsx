@@ -72,7 +72,7 @@ function HeaderIcon({ children }) {
     );
 }
 
-function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
+function OtpBoxes({ isMobile, value, onChange, disabled, OTP_LEN }) {
     const inputsRef = useRef([]);
     const handleChange = (i, v) => {
         const clean = v.replace(/\D/g, "").slice(0, 1);
@@ -94,8 +94,8 @@ function OtpBoxes({ value, onChange, disabled, OTP_LEN }) {
                         inputMode: "numeric",
                         style: {
                             textAlign: "center",
-                            fontSize: "1.2rem",
-                            width: "1.4rem",
+                            fontSize: isMobile ? "0.3rem" : "1.2rem",
+                            width: isMobile ? "0.5rem" : "1.4rem",
                             color: "#fff",
                         },
                     }}
@@ -126,9 +126,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
     const RESEND_SECONDS = 30;
 
     const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const PHONE_RX = /^[6-9]\d{9}$/;
-
-    const detectMode = (v) => (EMAIL_RX.test(v) ? "email" : PHONE_RX.test(v) ? "phone" : null);
+    const detectMode = (v) => (EMAIL_RX.test(v) ? "email" : null);
 
     const handleReset = () => {
         setStep(1);
@@ -147,7 +145,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
     const handleGetOtp = async () => {
         const mode = detectMode(identifier.trim());
         if (!mode) {
-            setErrorMsg("Enter valid email or 10-digit mobile number.");
+            setErrorMsg("Enter a valid email address.");
             return;
         }
         setLoading(true);
@@ -204,15 +202,17 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                             OTP Verification
                         </Typography>
                         <Typography variant="body2" color="grey.400">
-                            Enter your email or phone number
+                            Enter your email
                         </Typography>
                         <TextField
                             fullWidth
-                            placeholder="Enter Email or Mobile Number"
+                            placeholder="Enter your email address"
                             value={identifier}
                             onChange={(e) => setIdentifier(e.target.value)}
                             error={!!errorMsg}
                             helperText={errorMsg}
+                            autoComplete="email"
+                            type="email"
                             sx={{
                                 mt: 2,
                                 input: { color: "#fff" },
@@ -243,6 +243,7 @@ export default function OtpPopup({ open, onClose, onVerified }) {
                             Sent to {identifier}
                         </Typography>
                         <OtpBoxes
+                            isMobile={isMobile}
                             value={otp}
                             onChange={(v) => {
                                 const clean = v.replace(/\D/g, "").slice(0, OTP_LEN);

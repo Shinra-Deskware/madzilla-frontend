@@ -20,7 +20,7 @@ import {
     BuildCircle,
     DoNotDisturbAlt
 } from "@mui/icons-material";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
+import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import StarIcon from "@mui/icons-material/Star";
 import VerifiedIcon from "@mui/icons-material/Verified";
 import LocalShippingIcon from "@mui/icons-material/LocalShipping";
@@ -143,7 +143,7 @@ export default function ProductsSection() {
     const currentProduct = products[currentProductIndex];
 
     return (
-        <Box className="product-wrapper">
+        <Box className="productsection-wrapper">
 
             {/* Title (desktop) */}
             {!isMobile && (
@@ -284,7 +284,7 @@ export default function ProductsSection() {
                             </Box>
                             <Button
                                 variant="contained"
-                                startIcon={<ShoppingCartIcon />}
+                                startIcon={<ArrowOutwardIcon />}
                                 onClick={() => navigate("/dashboard/products")}
                                 className="add-to-cart-btn"
                             >
