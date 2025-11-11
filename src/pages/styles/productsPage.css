@@ -74,7 +74,11 @@ body {
     gap: 0.7rem;
     position: relative;
     margin-top: 10%;
-    max-height: 400px;
+    max-height: 500px;
+    overflow: scroll;
+    scrollbar-width: none;
+    width: 20%;
+    align-items: center;
 }
 
 .thumb-image {
@@ -96,7 +100,6 @@ body {
 .thumb-image.selected {
     opacity: 1;
     border: 1px solid #ffffff;
-    transform: scale(1.05);
 }
 
 .main-image-box {
@@ -200,7 +203,7 @@ body {
 .product-title {
     font-weight: 700 !important;
     letter-spacing: 0.05rem !important;
-    font-size: 1.5rem !important;
+    font-size: 1.8rem !important;
 }
 
 .rating-badge {

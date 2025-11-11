@@ -148,7 +148,6 @@ export default function ReviewUploadModal({ open, onClose, mode }) {
                 <MenuItem value="">Select Product Model</MenuItem>
                 <MenuItem value="Classic">Classic</MenuItem>
                 <MenuItem value="Bluetooth">Bluetooth</MenuItem>
-                <MenuItem value="Humidifier">Humidifier</MenuItem>
             </Select>
 
             {errors.productModel && (

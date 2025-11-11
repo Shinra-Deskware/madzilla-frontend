@@ -206,7 +206,7 @@ export default function ProductsPage() {
 
                     <div className="product-image-section">
                         <img
-                            src={`/assets/${images[selectedImage]}`}
+                            src={`/productImages/${images[selectedImage]}`}
                             alt={images[selectedImage]}
                             loading="lazy"
                             className="product-main-image"
@@ -217,7 +217,7 @@ export default function ProductsPage() {
                         {images.map((img, index) => (
                             <img
                                 key={index}
-                                src={`/assets/${img}`}
+                                src={`/productImages/${img}`}
                                 alt={img}
                                 loading="lazy"
                                 onClick={() => setSelectedImage(index)}
@@ -354,28 +354,82 @@ export default function ProductsPage() {
                 {/* LEFT SECTION */}
                 <Box className="left-section">
                     <Box className="image-row">
+
                         <Box className="left-thumbnails">
-                            {images.map((img, idx) => (
-                                <Box
-                                    key={idx}
-                                    component="img"
-                                    src={`/assets/${img}`}
-                                    alt={img}
-                                    loading="lazy"
-                                    className={`thumb-image ${selectedImage === idx ? "selected" : ""
-                                        }`}
-                                    onClick={() => setSelectedImage(idx)}
-                                />
-                            ))}
+                            {images.map((img, idx) => {
+                                const isYouTube = img.includes("youtube.com") || img.includes("youtu.be");
+                                let videoId = "";
+
+                                if (isYouTube) {
+                                    const match =
+                                        img.match(/v=([^&]+)/) ||
+                                        img.match(/shorts\/([^?]+)/) ||
+                                        img.match(/youtu\.be\/([^?]+)/);
+                                    videoId = match ? match[1] : "";
+                                }
+
+                                const thumbnailSrc = isYouTube
+                                    ? '/assets/youtube.gif'
+                                    : `/productImages/${img}`;
+
+                                return (
+                                    <Box
+                                        key={idx}
+                                        className={`thumb-container ${selectedImage === idx ? "selected" : ""}`}
+                                        onClick={() => setSelectedImage(idx)}
+                                    >
+                                        <img
+                                            src={thumbnailSrc}
+                                            alt={`thumb-${idx}`}
+                                            loading="lazy"
+                                            className="thumb-image"
+                                            onError={(e) => (e.target.src = "/fallback-thumb.jpg")}
+                                        />
+                                    </Box>
+                                );
+                            })}
                         </Box>
+
                         <Box className="main-image-box">
-                            <Box
-                                component="img"
-                                src={`/assets/${images[selectedImage]}`}
-                                alt={images[selectedImage]}
-                                loading="lazy"
-                                className="main-image"
-                            />
+                            {(() => {
+                                const selected = images[selectedImage];
+                                const isYouTube =
+                                    selected.includes("youtube.com") || selected.includes("youtu.be");
+
+                                if (isYouTube) {
+                                    const match =
+                                        selected.match(/v=([^&]+)/) ||
+                                        selected.match(/shorts\/([^?]+)/) ||
+                                        selected.match(/youtu\.be\/([^?]+)/);
+                                    const videoId = match ? match[1] : "";
+
+                                    return (
+                                        <iframe
+                                            src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&controls=1`}
+                                            title="YouTube video"
+                                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            style={{
+                                                border: "none",
+                                                width: "100%",
+                                                height: "100%",
+                                                borderRadius: "12px",
+                                                backgroundColor: "#000",
+                                            }}
+                                            className="main-image"
+                                        />
+                                    );
+                                }
+
+                                return (
+                                    <img
+                                        src={`/productImages/${selected}`}
+                                        alt={selected}
+                                        loading="lazy"
+                                        className="main-image"
+                                    />
+                                );
+                            })()}
                         </Box>
                     </Box>
                     {(cartCounts[product.key] || 0) === 0 ? (
@@ -584,7 +638,7 @@ export default function ProductsPage() {
                 {product.productDescription.map((item, i) => (
                     <Box key={i} className="desc-row">
                         <img
-                            src={`/assets/${item.image}`}
+                            src={`/productImages/${item.image}`}
                             alt={item.image}
                             loading="lazy"
                             className="desc-img"
@@ -596,7 +650,7 @@ export default function ProductsPage() {
 
             <ProductAccordionSection product={product} />
 
-            <Button variant="contained" onClick={handleOpen} style={{marginBottom: '1rem'}}>
+            <Button variant="contained" onClick={handleOpen} style={{ marginBottom: '1rem' }}>
                 Write a Review
             </Button>
             <ReviewUploadModal

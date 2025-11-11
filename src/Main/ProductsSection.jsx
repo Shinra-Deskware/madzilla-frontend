@@ -197,7 +197,7 @@ export default function ProductsSection() {
                                     </div>
                                     <Box className="interest-header">
                                         <img
-                                            src={`/assets/${item.images[activeImages[cardIndex]]}`}
+                                            src={`/productImages/${item.images[activeImages[cardIndex]]}`}
                                             loading="lazy"
                                             alt={item.title}
                                         />
@@ -211,7 +211,7 @@ export default function ProductsSection() {
                                                     }`}
                                                 onClick={() => handleThumbnailClick(cardIndex, i)}
                                             >
-                                                <img src={`/assets/${img}`} loading="lazy" alt="" />
+                                                <img src={`/productImages/${img}`} loading="lazy" alt="" />
                                             </Box>
                                         ))}
                                     </Box>
@@ -259,29 +259,82 @@ export default function ProductsSection() {
                         <div className="left-side-shop-now">
                             <Box className="section-image-row">
                                 <Box className="left-thumbnails">
-                                    {currentProduct.images.map((img, idx) => (
-                                        <Box
-                                            key={idx}
-                                            component="img"
-                                            src={`/assets/${img}`}
-                                            loading="lazy"
-                                            alt={`thumb-${idx}`}
-                                            className={`thumb-image ${selectedImage === img ? "selected" : ""
-                                                }`}
-                                            onClick={() => setSelectedImage(img)}
-                                        />
-                                    ))}
+                                    {currentProduct.images.map((img, idx) => {
+                                        // check if this is a YouTube link
+                                        const isYouTube = img.includes("youtube.com") || img.includes("youtu.be");
+
+                                        // extract YouTube video ID if needed
+                                        let videoId = "";
+                                        if (isYouTube) {
+                                            const match =
+                                                img.match(/v=([^&]+)/) || // normal YouTube link
+                                                img.match(/shorts\/([^?]+)/) || // shorts link
+                                                img.match(/youtu\.be\/([^?]+)/); // share link
+                                            videoId = match ? match[1] : "";
+                                        }
+
+                                        return (
+                                            <Box
+                                                key={idx}
+                                                className={`thumb-container ${selectedImage === img ? "selected" : ""}`}
+                                                onClick={() => setSelectedImage(img)}
+                                            >
+                                                {isYouTube ? (
+                                                    <img
+                                                        src='/assets/youtube.gif' // YouTube thumbnail
+                                                        alt={`YouTube thumbnail ${idx}`}
+                                                        // className="thumb-image"
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={`/productImages/${img}`} // local product image
+                                                        loading="lazy"
+                                                        alt={`thumb-${idx}`}
+                                                        className="thumb-image"
+                                                    />
+                                                )}
+                                            </Box>
+                                        );
+                                    })}
                                 </Box>
+
                                 <Box className="section-main-image-box">
-                                    <Box
-                                        component="img"
-                                        src={`/assets/${selectedImage}`}
-                                        loading="lazy"
-                                        alt="product"
-                                        className="section-main-image"
-                                    />
+                                    {selectedImage.includes("youtube.com") || selectedImage.includes("youtu.be") ? (
+                                        // show YouTube video if selected item is a YouTube URL
+                                        <iframe
+                                            src={(function () {
+                                                const match =
+                                                    selectedImage.match(/v=([^&]+)/) ||
+                                                    selectedImage.match(/shorts\/([^?]+)/) ||
+                                                    selectedImage.match(/youtu\.be\/([^?]+)/);
+                                                const videoId = match ? match[1] : "";
+                                                return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&showinfo=0&controls=1`;
+                                            })()}
+                                            title="YouTube video"
+                                            allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                            allowFullScreen
+                                            style={{
+                                                border: "none",
+                                                width: "100%",
+                                                height: "100%",
+                                                borderRadius: "12px",
+                                                backgroundColor: "#000",
+                                            }}
+                                            className="section-main-video"
+                                        />
+
+                                    ) : (
+                                        // otherwise show product image
+                                        <img
+                                            src={`/productImages/${selectedImage}`}
+                                            loading="lazy"
+                                            alt="product"
+                                            className="section-main-image"
+                                        />
+                                    )}
                                 </Box>
                             </Box>
+
                             <Button
                                 variant="contained"
                                 startIcon={<ArrowOutwardIcon />}
@@ -291,6 +344,7 @@ export default function ProductsSection() {
                                 SHOP NOW
                             </Button>
                         </div>
+
                     </Box>
 
                     {/* Right Section */}
@@ -438,7 +492,7 @@ export default function ProductsSection() {
                                                     const IconComponent = Icons[feature.icon];
                                                     return (
                                                         <div className="feature-line" key={i}>
-                                                            <IconComponent color={feature.color} fontSize="medium" />
+                                                            <IconComponent color="white" fontSize="medium" />
                                                             {feature.text}
                                                         </div>
                                                     );
@@ -455,7 +509,7 @@ export default function ProductsSection() {
                                                 const IconComponent = icons[item.icon];
                                                 return (
                                                     <Box key={index} className="feature-line" display="flex" alignItems="center" gap={1}>
-                                                        <IconComponent color={item.color} fontSize="medium" />
+                                                        <IconComponent color='white' fontSize="medium" />
                                                         <Typography variant="body2">{item.text}</Typography>
                                                     </Box>
                                                 );
@@ -471,7 +525,7 @@ export default function ProductsSection() {
                                                 const IconComponent = icons[service.icon];
                                                 return (
                                                     <Box key={index} className="feature-line" display="flex" alignItems="center" gap={1}>
-                                                        <IconComponent color={service.color} fontSize="medium" />
+                                                        <IconComponent color="white" fontSize="medium" />
                                                         <Typography variant="body2">{service.text}</Typography>
                                                     </Box>
                                                 );
@@ -486,7 +540,7 @@ export default function ProductsSection() {
                                                 const IconComponent = icons[service.icon];
                                                 return (
                                                     <Box key={index} className="feature-line" display="flex" alignItems="center" gap={1}>
-                                                        <IconComponent color={service.color} fontSize="medium" />
+                                                        <IconComponent color="white" fontSize="medium" />
                                                         <Typography variant="body2">{service.text}</Typography>
                                                     </Box>
                                                 );

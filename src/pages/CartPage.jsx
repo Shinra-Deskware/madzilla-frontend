@@ -24,10 +24,10 @@ import { State, City } from "country-state-city";
 const PaymentLogos = { Phonepe: 'phonepe', Paytm: 'paytm', Gpay: 'gpay' };
 const DeliveryLogos = { Fast: 'rabbit', Normal: 'tortoise' };
 const Info = [
-    { icon: <ShippingIcon />, bg: "#FCE7F3", title: "Free Shipping", subtitle: "For online payments" },
-    { icon: <CallIcon />, bg: "#F3F4F6", title: "Call Us Anytime", subtitle: "+9193464 07877" },
-    { icon: <ChatIcon />, bg: "#DCFCE7", title: "Chat With Us", subtitle: "We offer 24-hour chat support" },
-    { icon: <GiftIcon />, bg: "#FEF9C3", title: "Gift Cards", subtitle: "For your loved one, in any amount" },
+    { icon: '/assets/outForDelivery.gif', bg: "#FCE7F3", title: "Free Shipping", subtitle: "For online payments" },
+    { icon: '/assets/onlineSupport.gif', bg: "#F3F4F6", title: "Call Us Anytime", subtitle: "+91 93464 07877" },
+    { icon: '/assets/whatsapp.gif', bg: "#DCFCE7", title: "Chat With Us", subtitle: "We offer 24-hour chat support" },
+    { icon: '/assets/corrugatedBox.gif', bg: "#FEF9C3", title: "Bulk Orders", subtitle: "Save upto 30% on bulk orders" },
 ];
 
 const formatNumber = n => Number(n).toLocaleString('en-IN');
@@ -667,7 +667,13 @@ export default function CartPage() {
                         <div style={{ marginLeft: '1rem', display: 'flex', gap: '1rem', overflow: "scroll", scrollbarWidth: "none" }}>
                             {Info.map((i, idx) => (
                                 <div key={idx} className="info-box">
-                                    <Avatar className="info-icon" sx={{ backgroundColor: i.bg }}>{i.icon}</Avatar>
+                                    <Avatar className="info-icon" sx={{ backgroundColor: i.bg }}>
+                                        <img
+                                            src={i.icon}
+                                            alt={i.title}
+                                            style={{ width: "70%", height: "70%", objectFit: "contain" }}
+                                        />
+                                    </Avatar>
                                     <div className="info-text">
                                         <div className="info-title">{i.title}</div>
                                         <div className="info-subtitle">{i.subtitle}</div>

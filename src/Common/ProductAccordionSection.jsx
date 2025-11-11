@@ -127,19 +127,20 @@ export default function ProductAccordionSection({ product }) {
                         {reviewData.map((item, index) => (
                             <div className="review-card" key={index}>
                                 <div className="media-wrapper">
-                                    {item.type === "image" && <img src={`/assets/${item.url}.jpeg`} loading="lazy" alt={`/assets/${item.url}.jpeg`} />}
-                                    {item.type === "video" && (
-                                        <video
-                                            src={`/assets/${item.url}.mp4`}
-                                            alt={item.url}
-                                            controls
-                                            loading="lazy"
-                                            controlsList="nodownload"
-                                            disablePictureInPicture
-                                            className="review-video"
-                                            onContextMenu={(e) => e.preventDefault()}
-                                        />
-                                    )}
+                                    <iframe
+                                        src={(function () {
+                                            let videoId = "";
+                                            const match =
+                                                item.url.match(/v=([^&]+)/) || item.url.match(/shorts\/([^?]+)/);
+                                            if (match) videoId = match[1];
+                                            return `https://www.youtube.com/embed/${videoId}?rel=0`;
+                                        })()}
+                                        title="YouTube video"
+                                        style={{ border: "none" }}
+                                        allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        className="review-video"
+                                    />
                                 </div>
                                 <div className="review-content">
                                     <div className="review-message">{item.message}</div>

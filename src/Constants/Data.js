@@ -5,23 +5,27 @@ export const productsData = [
         "title": "Madzilla Classic",
         "subTitle": "Classic",
         "images": [
-            "product1.png",
-            "product1.png",
-            "product1.png"
+            "1.jpg",
+            "2.jpg",
+            "3.jpg",
+            "https://www.youtube.com/watch?v=CYhjyP_lqfc",
+            "4.jpg",
+            "5.jpg",
+            "6.jpg",
         ],
         "video": "/assets/product-video.mp4",
         "stock": true,
         "productDescription": [
             {
-                "image": "product1.png",
+                "image": "1.jpg",
                 "text": "This Godzilla collectible is crafted with premium - grade PLA material, designed to deliver a smooth, durable, and finely detailed finish.Every scale, spike, and curve is sculpted to reflect the iconic look of the legendary monster.The strong base and lightweight build make it easy to place on shelves, desks, or display cases without compromising stability.This isn’t just a toy — it’s a high- quality centerpiece built to impress collectors, fans, and design enthusiasts alike."
             },
             {
-                "image": "product1.png",
+                "image": "2.jpg",
                 "text": "Powering the collectible is effortless with its reliable USB Type-C connection, supporting a standard 5V USB source. Once connected, the figure transforms with stunning multicolor spine lighting, creating a powerful ambient glow. Control is fully wireless through a dedicated companion app compatible with both iOS and Android devices. With seamless Bluetooth pairing, users can easily customize lighting effects, brightness, and modes to match their space and mood."
             },
             {
-                "image": "product1.png",
+                "image": "3.jpg",
                 "text": "The toy is built with a water-resistant exterior, ensuring durability even in everyday environments. It’s recommended for ages 6 and above, as the figure contains small, sharp details designed to preserve the authentic look of Godzilla. When powered safely and handled with care, it delivers a premium, immersive display experience — a perfect fusion of artistry, technology, and nostalgia."
             }
         ],
@@ -149,9 +153,9 @@ export const productsData = [
         "title": "Madzilla Bluetooth",
         "subTitle": "Bluetooth",
         "images": [
-            "product2.png",
-            "product2.png",
-            "product2.png"
+            "4.jpg",
+            "5.jpg",
+            "6.jpg"
         ],
         "video": "/assets/product-video.mp4",
         "stock": true,
@@ -292,131 +296,131 @@ export const productsData = [
         "rating": 4.2,
         "totalReviews": 28
     },
-    {
-        "key": "product3",
-        "productId": "humidifierModel1",
-        "title": "Madzilla Humidifier",
-        "subTitle": "Humidifier",
-        "images": [
-            "product3.png",
-            "product3.png",
-            "product3.png"
-        ],
-        "video": "/assets/product-video.mp4",
-        "stock": false,
-        "productDescription": [
-            {
-                "image": "product3.png",
-                "text": "This Godzilla collectible is crafted with premium - grade PLA material, designed to deliver a smooth, durable, and finely detailed finish.Every scale, spike, and curve is sculpted to reflect the iconic look of the legendary monster.The strong base and lightweight build make it easy to place on shelves, desks, or display cases without compromising stability.This isn’t just a toy — it’s a high- quality centerpiece built to impress collectors, fans, and design enthusiasts alike."
-            },
-            {
-                "image": "product3.png",
-                "text": "Powering the collectible is effortless with its reliable USB Type-C connection, supporting a standard 5V USB source. Once connected, the figure transforms with stunning multicolor spine lighting, creating a powerful ambient glow. Control is fully wireless through a dedicated companion app compatible with both iOS and Android devices. With seamless Bluetooth pairing, users can easily customize lighting effects, brightness, and modes to match their space and mood."
-            },
-            {
-                "image": "product3.png",
-                "text": "The toy is built with a water-resistant exterior, ensuring durability even in everyday environments. It’s recommended for ages 6 and above, as the figure contains small, sharp details designed to preserve the authentic look of Godzilla. When powered safely and handled with care, it delivers a premium, immersive display experience — a perfect fusion of artistry, technology, and nostalgia."
-            }
-        ],
-        "warrantyDetails": "We stand behind the quality of our product. This item is covered by a one-year limited warranty against manufacturing defects from the date of purchase. If your product exhibits a manufacturing fault during the warranty period, we will repair or replace it at our discretion — free of charge — after a quick inspection and proof of purchase. This warranty does not cover damage caused by misuse, accidental damage, improper power sources, unauthorized repairs, or normal wear and tear. For faster service, please contact our support team with your order number and photos of the issue; we’ll guide you through the replacement or repair process and clarify any shipping steps.",
-        "warnings": [
-            "Contains small and sharp parts. Not suitable for children under 6 years. Adult supervision required.",
-            "Use only a 5V USB Type-C power source. Do not use higher-voltage adapters or modified power supplies.",
-            "Do not open, modify, or attempt to repair the product. Unauthorized disassembly voids warranty.",
-            "Avoid immersion; not guaranteed waterproof for prolonged submersion.",
-            "Stop using immediately if cable, connector, or housing is damaged.",
-            "Charge only with certified adapters/cables. Supervise charging and keep away from flammable surfaces.",
-            "Disconnect power before cleaning. Use a dry or lightly damp cloth only.",
-            "Dispose of electronic components per local e-waste regulations.",
-            "If you notice unusual heat, smoke, or smells, disconnect immediately and contact support."
-        ],
-        "legalDisclaimer": "This product is intended for hobby and decorative use only. The seller is not liable for injury, damage, or misuse of the product. By purchasing, you acknowledge you’ve read and agreed to the safety instructions.",
-        "whatsInTheBox": [
-            "1 × Godzilla Classic Unit",
-            "1 × USB Type-C Cable",
-            "1 × Quick Start Guide",
-            "1 × Warranty Card"
-        ],
-        "powerSpecs": {
-            "voltage": "5V DC",
-            "current": "2A",
-            "connector": "USB Type-C",
-            "powerConsumption": "10W (max)"
-        },
-        "appInfo": {
-            "name": "Godzilla Control App",
-            "ios": "iOS 13+",
-            "android": "Android 8+",
-            "pairing": "Enable Bluetooth, open the app, and tap 'Connect' to pair."
-        },
-        "returnPolicy": "7-day replacement policy applicable only on manufacturing defects. No refunds on physical or power damage. Buyer is responsible for return shipping unless the product is faulty on arrival.",
-        "ageRestriction": "⚠️ Not suitable for children under 6 years of age. This is a collectible, not a toy.",
-        "careInstructions": [
-            "Wipe gently with a dry cloth.",
-            "Store indoors in a cool, dry place.",
-            "Avoid direct sunlight for long periods.",
-            "Do not immerse in water."
-        ],
-        "certificationInfo": "This is a DIY collectible product designed for decorative use. Not BIS or CE certified. Complies with basic USB 5V handling standards.",
-        "reviews": [],
-        "features": [
-            {
-                "icon": "Category",
-                "color": "primary",
-                "text": "Crafted with premium PLA plastic for a durable, lightweight, and smooth matte finish."
-            },
-            {
-                "icon": "Opacity",
-                "color": "info",
-                "text": "Integrated ultrasonic humidifier adds soothing mist effects for a calming atmosphere."
-            },
-            {
-                "icon": "LightMode",
-                "color": "warning",
-                "text": "WS2812B LED system with 20+ dynamic color effects and authentic Godzilla animations."
-            },
-            {
-                "icon": "Power",
-                "color": "success",
-                "text": "Powered by a 5V USB Type-C connection for stable, efficient performance."
-            },
-            {
-                "icon": "TouchApp",
-                "color": "secondary",
-                "text": "Dual-button control — one for humidifier on/off, the other for lighting operations."
-            },
-            {
-                "icon": "ColorLens",
-                "color": "primary",
-                "text": "Single press changes LED color; long press toggles animation mode for the selected color."
-            },
-            {
-                "icon": "Waves",
-                "color": "info",
-                "text": "Produces fine, cool mist to improve air freshness while enhancing the lighting mood."
-            },
-            {
-                "icon": "Science",
-                "color": "secondary",
-                "text": "Smart mist-control chip automatically balances vapor output and LED temperature."
-            },
-            {
-                "icon": "WorkspacePremium",
-                "color": "primary",
-                "text": "A perfect blend of art, light, and relaxation — ideal for desks, nightstands, and decor setups."
-            }
-        ],
-        "services": [
-            "UPI / Debit / Credit Cards Accepted",
-            "1 Year Warranty",
-            "7 Days Replacement"
-        ],
-        "price": 2,
-        "originalPrice": 1,
-        "discount": 0,
-        "rating": 5,
-        "totalReviews": 84
-    }
+    // {
+    //     "key": "product3",
+    //     "productId": "humidifierModel1",
+    //     "title": "Madzilla Humidifier",
+    //     "subTitle": "Humidifier",
+    //     "images": [
+    //         "product3.png",
+    //         "product3.png",
+    //         "product3.png"
+    //     ],
+    //     "video": "/assets/product-video.mp4",
+    //     "stock": false,
+    //     "productDescription": [
+    //         {
+    //             "image": "product3.png",
+    //             "text": "This Godzilla collectible is crafted with premium - grade PLA material, designed to deliver a smooth, durable, and finely detailed finish.Every scale, spike, and curve is sculpted to reflect the iconic look of the legendary monster.The strong base and lightweight build make it easy to place on shelves, desks, or display cases without compromising stability.This isn’t just a toy — it’s a high- quality centerpiece built to impress collectors, fans, and design enthusiasts alike."
+    //         },
+    //         {
+    //             "image": "product3.png",
+    //             "text": "Powering the collectible is effortless with its reliable USB Type-C connection, supporting a standard 5V USB source. Once connected, the figure transforms with stunning multicolor spine lighting, creating a powerful ambient glow. Control is fully wireless through a dedicated companion app compatible with both iOS and Android devices. With seamless Bluetooth pairing, users can easily customize lighting effects, brightness, and modes to match their space and mood."
+    //         },
+    //         {
+    //             "image": "product3.png",
+    //             "text": "The toy is built with a water-resistant exterior, ensuring durability even in everyday environments. It’s recommended for ages 6 and above, as the figure contains small, sharp details designed to preserve the authentic look of Godzilla. When powered safely and handled with care, it delivers a premium, immersive display experience — a perfect fusion of artistry, technology, and nostalgia."
+    //         }
+    //     ],
+    //     "warrantyDetails": "We stand behind the quality of our product. This item is covered by a one-year limited warranty against manufacturing defects from the date of purchase. If your product exhibits a manufacturing fault during the warranty period, we will repair or replace it at our discretion — free of charge — after a quick inspection and proof of purchase. This warranty does not cover damage caused by misuse, accidental damage, improper power sources, unauthorized repairs, or normal wear and tear. For faster service, please contact our support team with your order number and photos of the issue; we’ll guide you through the replacement or repair process and clarify any shipping steps.",
+    //     "warnings": [
+    //         "Contains small and sharp parts. Not suitable for children under 6 years. Adult supervision required.",
+    //         "Use only a 5V USB Type-C power source. Do not use higher-voltage adapters or modified power supplies.",
+    //         "Do not open, modify, or attempt to repair the product. Unauthorized disassembly voids warranty.",
+    //         "Avoid immersion; not guaranteed waterproof for prolonged submersion.",
+    //         "Stop using immediately if cable, connector, or housing is damaged.",
+    //         "Charge only with certified adapters/cables. Supervise charging and keep away from flammable surfaces.",
+    //         "Disconnect power before cleaning. Use a dry or lightly damp cloth only.",
+    //         "Dispose of electronic components per local e-waste regulations.",
+    //         "If you notice unusual heat, smoke, or smells, disconnect immediately and contact support."
+    //     ],
+    //     "legalDisclaimer": "This product is intended for hobby and decorative use only. The seller is not liable for injury, damage, or misuse of the product. By purchasing, you acknowledge you’ve read and agreed to the safety instructions.",
+    //     "whatsInTheBox": [
+    //         "1 × Godzilla Classic Unit",
+    //         "1 × USB Type-C Cable",
+    //         "1 × Quick Start Guide",
+    //         "1 × Warranty Card"
+    //     ],
+    //     "powerSpecs": {
+    //         "voltage": "5V DC",
+    //         "current": "2A",
+    //         "connector": "USB Type-C",
+    //         "powerConsumption": "10W (max)"
+    //     },
+    //     "appInfo": {
+    //         "name": "Godzilla Control App",
+    //         "ios": "iOS 13+",
+    //         "android": "Android 8+",
+    //         "pairing": "Enable Bluetooth, open the app, and tap 'Connect' to pair."
+    //     },
+    //     "returnPolicy": "7-day replacement policy applicable only on manufacturing defects. No refunds on physical or power damage. Buyer is responsible for return shipping unless the product is faulty on arrival.",
+    //     "ageRestriction": "⚠️ Not suitable for children under 6 years of age. This is a collectible, not a toy.",
+    //     "careInstructions": [
+    //         "Wipe gently with a dry cloth.",
+    //         "Store indoors in a cool, dry place.",
+    //         "Avoid direct sunlight for long periods.",
+    //         "Do not immerse in water."
+    //     ],
+    //     "certificationInfo": "This is a DIY collectible product designed for decorative use. Not BIS or CE certified. Complies with basic USB 5V handling standards.",
+    //     "reviews": [],
+    //     "features": [
+    //         {
+    //             "icon": "Category",
+    //             "color": "primary",
+    //             "text": "Crafted with premium PLA plastic for a durable, lightweight, and smooth matte finish."
+    //         },
+    //         {
+    //             "icon": "Opacity",
+    //             "color": "info",
+    //             "text": "Integrated ultrasonic humidifier adds soothing mist effects for a calming atmosphere."
+    //         },
+    //         {
+    //             "icon": "LightMode",
+    //             "color": "warning",
+    //             "text": "WS2812B LED system with 20+ dynamic color effects and authentic Godzilla animations."
+    //         },
+    //         {
+    //             "icon": "Power",
+    //             "color": "success",
+    //             "text": "Powered by a 5V USB Type-C connection for stable, efficient performance."
+    //         },
+    //         {
+    //             "icon": "TouchApp",
+    //             "color": "secondary",
+    //             "text": "Dual-button control — one for humidifier on/off, the other for lighting operations."
+    //         },
+    //         {
+    //             "icon": "ColorLens",
+    //             "color": "primary",
+    //             "text": "Single press changes LED color; long press toggles animation mode for the selected color."
+    //         },
+    //         {
+    //             "icon": "Waves",
+    //             "color": "info",
+    //             "text": "Produces fine, cool mist to improve air freshness while enhancing the lighting mood."
+    //         },
+    //         {
+    //             "icon": "Science",
+    //             "color": "secondary",
+    //             "text": "Smart mist-control chip automatically balances vapor output and LED temperature."
+    //         },
+    //         {
+    //             "icon": "WorkspacePremium",
+    //             "color": "primary",
+    //             "text": "A perfect blend of art, light, and relaxation — ideal for desks, nightstands, and decor setups."
+    //         }
+    //     ],
+    //     "services": [
+    //         "UPI / Debit / Credit Cards Accepted",
+    //         "1 Year Warranty",
+    //         "7 Days Replacement"
+    //     ],
+    //     "price": 2,
+    //     "originalPrice": 1,
+    //     "discount": 0,
+    //     "rating": 5,
+    //     "totalReviews": 84
+    // }
 ]
 
 export const warrantyClaim = [
@@ -552,12 +556,12 @@ export const faqs = [
     {
         question: "Is the BanlanX app required for all Madzilla models?",
         answer:
-            "No. Only the Bluetooth Edition uses the BanlanX app. The Classic and Humidifier editions work through built-in buttons and do not require any app."
+            "No. Only the Bluetooth Edition uses the BanlanX app. The Classic edition work through built-in buttons and do not require any app."
     },
     {
         question: "Can I customize the lighting effects?",
         answer:
-            "Full customization is available only on the Bluetooth Edition through the BanlanX app. For the Classic and Humidifier editions, customization is limited. You can message us with your preferred style, and we will guide you through the available options."
+            "Full customization is available only on the Bluetooth Edition through the BanlanX app. For the Classic edition, customization is limited. You can message us with your preferred style, and we will guide you through the available options."
     },
     {
         question: "Does Madzilla come with a warranty?",
@@ -570,9 +574,9 @@ export const faqs = [
             "All models require a standard 5V USB Type-C power source. Fast chargers, high-voltage adapters, and unofficial accessories should not be used, as they may void warranty."
     },
     {
-        question: "Is the Humidifier Edition safe for daily use?",
+        question: "How long does a refund usually take?",
         answer:
-            "Yes. It uses an ultrasonic mist system that stays cool and energy-efficient. Always use clean water and avoid adding oils or fragrances to maintain performance and safety."
+            "Refunds are typically processed within 24–48 hours after verification, and funds are credited within 5–7 business days."
     },
     {
         question: "How long does delivery usually take?",
