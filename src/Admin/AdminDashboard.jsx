@@ -5,6 +5,7 @@ import AdminUsers from "./AdminUsers";
 import AdminProducts from "./AdminProducts";
 import "./Styles/AdminDashboard.css";
 import AdminComplaints from "./AdminComplaints";
+import AdminWhatsappChats from "./AdminWhatsappChats";
 
 export default function AdminDashboard() {
     const [tab, setTab] = useState(0);
@@ -23,6 +24,7 @@ export default function AdminDashboard() {
                     <Tab label="Users" className="tab-item" />
                     <Tab label="Products" className="tab-item" />
                     <Tab label="Complaints" className="tab-item" /> {/* ✅ NEW */}
+                    <Tab label="WhatsApp Chats" className="tab-item" />
                 </Tabs>
 
             </div>
@@ -32,6 +34,7 @@ export default function AdminDashboard() {
                 {tab === 1 && <AdminUsers />}
                 {tab === 2 && <AdminProducts />}
                 {tab === 3 && <AdminComplaints />}
+                {tab === 4 && <AdminWhatsappChats />}
             </div>
         </div>
     );
