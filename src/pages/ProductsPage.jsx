@@ -205,24 +205,70 @@ export default function ProductsPage() {
                     </div>
 
                     <div className="product-image-section">
-                        <img
-                            src={`/productImages/${images[selectedImage]}`}
-                            alt={images[selectedImage]}
-                            loading="lazy"
-                            className="product-main-image"
-                        />
+                        {/* --- MOBILE MAIN IMAGE (YouTube support, same styling) --- */}
+                        {(() => {
+                            const img = images[selectedImage];
+                            const isYouTube =
+                                img.includes("youtube.com") || img.includes("youtu.be");
+
+                            if (isYouTube) {
+                                const match =
+                                    img.match(/v=([^&]+)/) ||
+                                    img.match(/shorts\/([^?]+)/) ||
+                                    img.match(/youtu\.be\/([^?]+)/);
+
+                                const videoId = match ? match[1] : "";
+
+                                return (
+                                    <iframe
+                                        className="product-main-image"  // ⬅ SAME STYLE as image
+                                        src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`}
+                                        title="YouTube video"
+                                        allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                                        allowFullScreen
+                                        style={{
+                                            border: "none",
+                                            width: "100%",
+                                            height: "100%",
+                                            backgroundColor: "#000",
+                                            borderRadius: "12px",
+                                        }}
+                                    />
+                                );
+                            }
+
+                            return (
+                                <img
+                                    src={`/productImages/${img}`}
+                                    alt={img}
+                                    loading="lazy"
+                                    className="product-main-image"
+                                />
+                            );
+                        })()}
                     </div>
 
                     <div className="thumbnail-row">
                         {images.map((img, index) => (
-                            <img
-                                key={index}
-                                src={`/productImages/${img}`}
-                                alt={img}
-                                loading="lazy"
-                                onClick={() => setSelectedImage(index)}
-                                className={`thumb ${selectedImage === index ? "active" : ""}`}
-                            />
+                            (() => {
+                                const isYouTube =
+                                    img.includes("youtube.com") || img.includes("youtu.be");
+
+                                const thumbSrc = isYouTube
+                                    ? "/assets/youtube.gif"
+                                    : `/productImages/${img}`;
+
+                                return (
+                                    <img
+                                        key={index}
+                                        src={thumbSrc}
+                                        alt={img}
+                                        loading="lazy"
+                                        onClick={() => setSelectedImage(index)}
+                                        className={`thumb ${selectedImage === index ? "active" : ""}`}
+                                    />
+                                );
+                            })()
                         ))}
                     </div>
 

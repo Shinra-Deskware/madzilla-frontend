@@ -195,13 +195,51 @@ export default function ProductsSection() {
                                         </div>
 
                                     </div>
-                                    <Box className="interest-header">
-                                        <img
-                                            src={`/productImages/${item.images[activeImages[cardIndex]]}`}
-                                            loading="lazy"
-                                            alt={item.title}
-                                        />
-                                    </Box>
+                                    {/* MAIN MOBILE IMAGE (supports YouTube) */}
+                                    {/* --- MOBILE MAIN IMAGE (With YouTube Support, SAME STYLING) --- */}
+                                    {(() => {
+                                        const img = item.images[activeImages[cardIndex]];
+                                        const isYouTube =
+                                            img.includes("youtube.com") || img.includes("youtu.be");
+
+                                        if (isYouTube) {
+                                            const match =
+                                                img.match(/v=([^&]+)/) ||
+                                                img.match(/shorts\/([^?]+)/) ||
+                                                img.match(/youtu\.be\/([^?]+)/);
+
+                                            const videoId = match ? match[1] : "";
+
+                                            return (
+                                                <iframe
+                                                    className="mobile-main-image"   // ← uses SAME STYLING as your existing image class
+                                                    src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&controls=1`}
+                                                    title="YouTube video"
+                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                    allowFullScreen
+                                                    style={{
+                                                        border: "none",
+                                                        borderRadius: "12px",
+                                                        width: "100%",
+                                                        height: "100%",
+                                                        backgroundColor: "#000"
+                                                    }}
+                                                />
+                                            );
+                                        }
+
+                                        // Normal image fallback
+                                        return (
+                                            <img
+                                                className="mobile-main-image"
+                                                src={`/productImages/${img}`}
+                                                loading="lazy"
+                                                alt={item.title}
+                                            />
+                                        );
+                                    })()}
+
+
 
                                     <Box className="thumbnail-row">
                                         {item.images.map((img, i) => (
@@ -211,7 +249,13 @@ export default function ProductsSection() {
                                                     }`}
                                                 onClick={() => handleThumbnailClick(cardIndex, i)}
                                             >
-                                                <img src={`/productImages/${img}`} loading="lazy" alt="" />
+                                                {/* MOBILE THUMBNAIL — image or YouTube GIF */}
+                                                {img.includes("youtube.com") || img.includes("youtu.be") ? (
+                                                    <img src="/assets/youtube.gif" loading="lazy" alt="YouTube" />
+                                                ) : (
+                                                    <img src={`/productImages/${img}`} loading="lazy" alt="" />
+                                                )}
+
                                             </Box>
                                         ))}
                                     </Box>
@@ -283,7 +327,7 @@ export default function ProductsSection() {
                                                     <img
                                                         src='/assets/youtube.gif' // YouTube thumbnail
                                                         alt={`YouTube thumbnail ${idx}`}
-                                                        // className="thumb-image"
+                                                    // className="thumb-image"
                                                     />
                                                 ) : (
                                                     <img

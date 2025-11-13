@@ -325,7 +325,6 @@
 }
 
 .thumbnail {
-    width: 45px !important;
     height: 45px !important;
     border: 2px solid transparent;
     border-radius: 6px;
@@ -337,7 +336,6 @@
 }
 
 .thumbnail img {
-    width: 100% !important;
     height: 100% !important;
     object-fit: contain !important;
     border-radius: 6px;
@@ -480,5 +478,9 @@ body {
 
     .rating-badge svg {
         font-size: 13px !important;
+    }
+
+    .mobile-main-image{
+        width: 100% !important;
     }
 }

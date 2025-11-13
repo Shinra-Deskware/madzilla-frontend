@@ -759,14 +759,13 @@ body {
         min-height: 100vh;
         background: #000;
         color: #fff;
-        width: 100%;
+        width: 96%;
         align-items: center;
     }
 
     .product-body {
         padding-top: 5%;
         padding-bottom: 100px;
-        overflow-y: auto;
         background: #000;
         justify-content: center;
         display: flex;
@@ -802,6 +801,7 @@ body {
         overflow-x: auto;
         justify-content: center;
         padding: 8px;
+        width: 100%;
     }
 
     .thumb {

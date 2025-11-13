@@ -179,6 +179,7 @@ export default function CartPage() {
     const { user } = useUser();
     const [products, setProducts] = useState([]);
     const [expanded, setExpanded] = useState("items");
+    const [expectedDate, setExpectedDate] = useState("");
     const [address, setAddress] = useState({
         fullName: "",
         emailId: "",
@@ -214,6 +215,23 @@ export default function CartPage() {
     const shipping = 0;
     const discount = couponCode === "FIRST100" ? -500 : 0;
     const subtotal = total + shipping + discount;
+    useEffect(() => {
+        if (!deliveryMethod) return;
+
+        const today = new Date();
+        let daysToAdd = deliveryMethod === "Fast" ? 2 : 5;
+
+        const expected = new Date(today);
+        expected.setDate(today.getDate() + daysToAdd);
+
+        const formatted = expected.toLocaleDateString("en-IN", {
+            weekday: "short",
+            month: "short",
+            day: "numeric"
+        });
+
+        setExpectedDate(formatted);
+    }, [deliveryMethod]);
 
     useEffect(() => {
         setStates(State.getStatesOfCountry("IN"));
@@ -314,6 +332,24 @@ export default function CartPage() {
 
     const startPayment = async () => {
         try {
+            // Missing address fields → open address section
+            if (!isAddressValid()) {
+                setExpanded("address");
+                return;
+            }
+
+            // Missing delivery method → open payment section
+            if (!deliveryMethod) {
+                setExpanded("payment");
+                return;
+            }
+
+            // Missing payment method → open payment section
+            if (!paymentMethod) {
+                setExpanded("payment");
+                return;
+            }
+
             if (!user?._id) {
                 // ensure session: should not happen (OTP flow sets session), but guard
                 alert("Please login or verify OTP before placing the order.");
@@ -636,6 +672,9 @@ export default function CartPage() {
                                         <div className="address-preview">
                                             <p><strong>💳 Payment:</strong> {paymentMethod}</p>
                                             <p><strong>📍 Delivery:</strong> {deliveryMethod}</p>
+                                            {expectedDate && (
+                                                <p><strong>📦 Expected Delivery:</strong> {expectedDate}</p>
+                                            )}
                                             <hr />
                                         </div>
                                     )}

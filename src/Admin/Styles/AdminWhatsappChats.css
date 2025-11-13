@@ -183,8 +183,3 @@
 .chat-date-divider::after {
     right: 0;
 }
-
-/* ✍️ MUI TextField - White Text & Outline */
-.MuiInputBase-input {
-    color: #000000 !important;
-}
